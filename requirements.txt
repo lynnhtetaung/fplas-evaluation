@@ -3,3 +3,5 @@ flask
 watchdog
 opencv-python
 Pillow
+pytest-playwright
+importlib-metadata

@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, url_for
 import os
 from handlers import NewImageHandler
 from watchdog.observers import Observer
@@ -6,6 +6,10 @@ from flutter_screenshot import run_flutter_and_screenshot
 from image_similarity import check_image_size_and_similarity
 
 app = Flask(__name__)
+
+# Paths and configurations
+# template_project_dir = '/home/lynnhtetaung/Documents/develop/PLAS/flutter_app' # for Local
+template_project_dir = '/app' # for Docker 
 
 screenshot_save_dir = os.path.join(app.static_folder, 'screenshots')
 correct_images_dir = os.path.join(app.static_folder, 'correct_images')
@@ -27,13 +31,16 @@ def upload():
     if not main_dart_file_content or not student_id or not exercise_number:
         return jsonify({"status": "error", "message": "Missing sourceCode, studentId, or exerciseNumber"}), 400
 
-    screenshot_path = os.path.join(screenshot_save_dir, f'{student_id}_{exercise_name}_{exercise_number}.png')
+    screenshot_folder = os.path.join(screenshot_save_dir, f'{student_id}_{exercise_name}_{exercise_number}')
+    os.makedirs(screenshot_folder, exist_ok=True)
 
-     # Run the Flutter web rebuild and take the screenshot
-    try:
-        run_flutter_and_screenshot(main_dart_file_content, screenshot_path)
-    except Exception as e:
-        return jsonify({"status": "error", "message": str(e)}), 500
+    run_flutter_and_screenshot(main_dart_file_content, screenshot_folder, exercise_number)
+
+    # Assuming you need the first screenshot taken
+    screenshot_path = os.path.join(screenshot_folder, f'exercise_{exercise_number}_page_1.png')
+    
+    if not os.path.exists(screenshot_path):
+        return jsonify({"status": "error", "message": "Screenshot not found"}), 500
 
     correct_image_path = os.path.join(correct_images_dir, f'correct_answer_exercise_{exercise_number}.png')
     result = check_image_size_and_similarity([correct_image_path], screenshot_path, output_folder)
@@ -54,7 +61,7 @@ if __name__ == '__main__':
     observer.schedule(event_handler, screenshot_save_dir, recursive=False)
     observer.start()
 
-    app.run(host="0.0.0.0", port=5000)
+    app.run(port=5000)
 
     observer.stop()
     observer.join()

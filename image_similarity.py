@@ -87,6 +87,9 @@ def calculate_similarity_by_ORB(image1_path, image2_path):
     return similarity
 
 def highlight_image_difference(image1_path, image2_path, output_folder):
+
+    border_width = 10  # Border width in pixels
+
     org_img = image1_path
     correct_image = Image.open(image1_path)
     correct_width, correct_height = correct_image.size
@@ -117,35 +120,50 @@ def highlight_image_difference(image1_path, image2_path, output_folder):
     kernel = np.ones((5,5), np.uint8)
     mask = cv2.dilate(mask, kernel, iterations=2)
 
+    # Crop the border area
+    cropped_mask = mask[border_width:-border_width, border_width:-border_width]
+
     highlighted_image = image2.copy()
-    highlighted_image[mask != 0] = [0, 0, 255]
+
+    if np.any(mask):
+        highlighted_image[border_width:-border_width, border_width:-border_width][cropped_mask != 0] = [0, 0, 255]  # Red highlights for differences
+        message = "Differences Found"
+        border_color = (0, 0, 255)  # Red
+        text_color = (0, 0, 255)    # Red
+    else:
+        message = "No Differences Found (100% 'correct')"
+        border_color = (0, 255, 0)  # Green
+        text_color = (0, 255, 0)    # Green
+        
+        # Highlight the entire image in green
+        highlighted_image[:] = [0, 255, 0]  # Green background
 
     alpha = 0.3
     result = cv2.addWeighted(image2, 1-alpha, highlighted_image, alpha, 0)
 
-    # highlight the differences with a red border and display a message indicating whether differences were found.
-    contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    for contour in contours:
-        x, y, w, h = cv2.boundingRect(contour)
-        cv2.rectangle(result, (x, y), (x+w, y+h), (0, 0, 255), 4)  # Increased thickness to 4
-
-    if contours:
-        message = "Differences Found"
-        text_color = (0, 0, 255)
-    else:
-        message = "No Differences Found"
-        text_color = (0, 255, 0)
+    # Create a copy of the result image to draw on
+    result_copy = result.copy()
 
     # Get the image dimensions
-    height, width = result.shape[:2]
+    height, width = result_copy.shape[:2]
+
     # Calculate the text size to center it
     text_size = cv2.getTextSize(message, cv2.FONT_HERSHEY_SIMPLEX, 1, 2)[0]
     text_x = (width - text_size[0]) // 2
-    text_y = 30
+    text_y = height - 30  # Position the text 30 pixels from the bottom
 
-    cv2.putText(result, message, (text_x, text_y), cv2.FONT_HERSHEY_SIMPLEX, 1, text_color, 2, cv2.LINE_AA)
+    # Add a background rectangle for better readability
+    cv2.rectangle(result_copy, (text_x - 10, text_y - text_size[1] - 10), (text_x + text_size[0] + 10, text_y + 10), (255, 255, 255), cv2.FILLED)
+
+    # Put the text on the image
+    cv2.putText(result_copy, message, (text_x, text_y), cv2.FONT_HERSHEY_SIMPLEX, 1, text_color, 2, cv2.LINE_AA)
 
     output_path_name = os.path.join(output_folder, os.path.basename(image2_path))
-    cv2.imwrite(output_path_name, result)
+
+    # Overwrite the existing screenshot if it exists
+    if os.path.exists(output_path_name):
+        os.remove(output_path_name)
+        
+    cv2.imwrite(output_path_name, result_copy)
     
     return output_path_name
