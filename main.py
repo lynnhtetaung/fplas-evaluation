@@ -35,6 +35,10 @@ def upload():
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 
+    # Check if the screenshot was created
+    if not os.path.exists(screenshot_path):
+        return jsonify({"status": "error", "message": "Screenshot not found"}), 500
+
     correct_image_path = os.path.join(correct_images_dir, f'correct_answer_exercise_{exercise_number}.png')
     result = check_image_size_and_similarity([correct_image_path], screenshot_path, output_folder)
 

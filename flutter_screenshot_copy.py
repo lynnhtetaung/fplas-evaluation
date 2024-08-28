@@ -12,6 +12,7 @@ flutter_executable = '/usr/local/flutter/bin/flutter'
 template_main_dart_path = os.path.join(template_project_dir, 'lib', 'main.dart')
 
 FIXED_FLUTTER_PORT = 80  # Nginx will serve on port 80
+shared_dir = '/usr/share/nginx/html'  # Path to the shared volume
 
 # Function to rebuild Flutter and take a screenshot
 def run_flutter_and_screenshot(main_dart_file_content, screenshot_path):
@@ -24,6 +25,11 @@ def run_flutter_and_screenshot(main_dart_file_content, screenshot_path):
         print("Building Flutter web project...")
         flutter_process = subprocess.Popen([flutter_executable, 'build', 'web'], cwd=template_project_dir)
         flutter_process.wait()  # Wait for the build to complete
+
+        # Copy the built web project to the shared directory
+        print("Copying build/web to shared volume...")
+        build_web_path = os.path.join(template_project_dir, 'build', 'web')
+        subprocess.run(['cp', '-r', f'{build_web_path}/.', shared_dir])
 
         # Take screenshot using Playwright
         with sync_playwright() as p:

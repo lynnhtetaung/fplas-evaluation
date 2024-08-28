@@ -9,9 +9,10 @@ from playwright.sync_api import sync_playwright
 
 template_project_dir = '/app'
 flutter_executable = '/usr/local/flutter/bin/flutter'
+
 template_main_dart_path = os.path.join(template_project_dir, 'lib', 'main.dart')
 
-FIXED_FLUTTER_PORT = 80  # Nginx will serve on port 80
+FIXED_FLUTTER_PORT = 8080
 
 # Function to rebuild Flutter and take a screenshot
 def run_flutter_and_screenshot(main_dart_file_content, screenshot_path):
@@ -20,18 +21,31 @@ def run_flutter_and_screenshot(main_dart_file_content, screenshot_path):
         with open(template_main_dart_path, 'w') as f:
             f.write(main_dart_file_content)
 
+        # Stop any process using the port
+        port_in_use_process = subprocess.run(["lsof", "-t", "-i", f":{FIXED_FLUTTER_PORT}"], capture_output=True, text=True)
+        if port_in_use_process.stdout:
+            print(f"Port {FIXED_FLUTTER_PORT} is in use. Stopping the process...")
+            subprocess.run(["fuser", "-k", "-n", "tcp", str(FIXED_FLUTTER_PORT)])
+
         # Rebuild Flutter web project
         print("Building Flutter web project...")
         flutter_process = subprocess.Popen([flutter_executable, 'build', 'web'], cwd=template_project_dir)
         flutter_process.wait()  # Wait for the build to complete
+
+        # Start the web server after the Flutter build
+        print(f"Starting the web server on port {FIXED_FLUTTER_PORT}...")
+        server_process = subprocess.Popen(["python3", "-m", "http.server", str(FIXED_FLUTTER_PORT)], cwd=os.path.join(template_project_dir, 'build', 'web'))
+
+        # Wait for the server to start
+        time.sleep(15)
 
         # Take screenshot using Playwright
         with sync_playwright() as p:
             browser = p.chromium.launch(headless=True)
             context = browser.new_context()
             page = context.new_page()
-            page.goto(f"http://nginx-app:80")  # Nginx will serve from port 80 in the nginx-app container
-
+            page.goto(f"http://localhost:{FIXED_FLUTTER_PORT}")
+            
             # Ensure the page is fully loaded
             page.wait_for_selector('body', timeout=60000)  # Wait for body to be present
             page.wait_for_load_state("networkidle", timeout=60000)  # Ensure all network activity has stopped
@@ -41,6 +55,9 @@ def run_flutter_and_screenshot(main_dart_file_content, screenshot_path):
             page.screenshot(path=screenshot_path)
             print(f"Screenshot saved to {screenshot_path}")
             browser.close()
+
+        # Stop the web server after screenshot
+        server_process.terminate()
 
     except Exception as e:
         print(f"Error: {e}")

@@ -13,6 +13,12 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Container Example',
       home: Container(
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: Colors.black,
+            width: 5.0,
+          ),
+        ),
         child: Scaffold(
           appBar: AppBar(
             title: const Text('Container Example'),
@@ -22,8 +28,16 @@ class MyApp extends StatelessWidget {
               width: 400,
               height: 400,
               decoration: BoxDecoration(
-                color: Colors.yellow,
+                color: Colors.blue,
                 borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.pink.withOpacity(0.2),
+                    spreadRadius: 5,
+                    blurRadius: 7,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
               ),
               child: const Center(
                 child: Text(
