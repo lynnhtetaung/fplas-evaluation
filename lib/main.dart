@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
               width: 400,
               height: 400,
               decoration: BoxDecoration(
-                color: Colors.blue,
+                color: Colors.pink,
                 borderRadius: BorderRadius.circular(10),
                 boxShadow: [
                   BoxShadow(
@@ -41,9 +41,9 @@ class MyApp extends StatelessWidget {
               ),
               child: const Center(
                 child: Text(
-                  'Hello, World!',
+                  'Hello, Boss!',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: Colors.black,
                     fontSize: 50,
                     fontWeight: FontWeight.bold,
                   ),

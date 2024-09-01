@@ -6,4 +6,5 @@ docker exec -it container_id sh
 bash is not supported generally, so install "apk add --no-cache bash" inside sh and exit .
 use bash normally.
 
-find and check /usr/share/nginx/html
+# Check the build path copied to the nginx serve path 
+/usr/share/nginx/html

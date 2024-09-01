@@ -4,11 +4,8 @@ import subprocess
 from playwright.sync_api import sync_playwright
 
 # Path configurations
-# template_project_dir = '/home/lynnhtetaung/Documents/develop/plas-local/flutter_app' # for Local
-# flutter_executable = '/home/lynnhtetaung/flutter/bin/flutter'
-
-template_project_dir = '/app'
-flutter_executable = '/usr/local/flutter/bin/flutter'
+template_project_dir = '/home/lynnhtetaung/Documents/develop/plas/flutter_app' # for Local
+flutter_executable = '/home/lynnhtetaung/flutter/bin/flutter'
 
 template_main_dart_path = os.path.join(template_project_dir, 'lib', 'main.dart')
 

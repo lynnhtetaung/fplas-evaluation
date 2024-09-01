@@ -184,141 +184,25 @@ def highlight_image_difference(image1_path, image2_path, output_folder):
     result_copy = student_image.copy()
     label_count = 1
 
-    # Highlight differences found or no differences
-    cropped_mask = mask[border_width:-border_width, border_width:-border_width]
-    highlighted_image = np.copy(result_copy)
-
-    if np.any(mask):
-        # Red highlights for differences
-        highlighted_image[border_width:-border_width, border_width:-border_width][cropped_mask != 0] = [0, 0, 255]
-        message = "Differences Found"
-        border_color = (0, 0, 255)  # Red
-        text_color = (0, 0, 255)    # Red
-    else:
-        # No differences found, use transparent green background
-        message = "No Differences Found"
-        border_color = (0, 255, 0)  # Green
-        text_color = (0, 255, 0)    # Green
-
-        # Create a transparent green overlay
-        overlay = np.copy(highlighted_image)
-        overlay[:] = [0, 255, 0]  # Green background
-
-        # Add transparency
-        alpha = 0.4  # Transparency factor
-        cv2.addWeighted(overlay, alpha, highlighted_image, 1 - alpha, 0, highlighted_image)
-
-    # Draw rectangles for differences if any
     for contour in contours:
         x, y, w, h = cv2.boundingRect(contour)
-        cv2.rectangle(highlighted_image, (x, y), (x + w, y + h), border_color, 2)
+        cv2.rectangle(result_copy, (x, y), (x + w, y + h), (0, 0, 255), 2)
 
         # Position the label text to the right of the rectangle
         text_x = x + w + 10  # Position the text 10 pixels to the right of the rectangle
         text_y = y + h // 2  # Vertically center the text with the box
 
         # Display larger and bolder label text
-        cv2.putText(highlighted_image, f'Diff-{label_count}', (text_x, text_y), 
-                    cv2.FONT_HERSHEY_SIMPLEX, 1.0, text_color, 3, cv2.LINE_AA)
+        cv2.putText(result_copy, f'Diff-{label_count}', (text_x, text_y), 
+                    cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 0, 0), 3, cv2.LINE_AA)
         label_count += 1
-
-    # Adjust position of the message to be centered at the bottom of the image
-    image_height, image_width, _ = highlighted_image.shape
-    bottom_y = image_height - 50  # 50 pixels from the bottom to accommodate the message
-
-    # Center the text horizontally
-    text_size = cv2.getTextSize(message, cv2.FONT_HERSHEY_SIMPLEX, 1.5, 3)[0]
-    text_x = (image_width - text_size[0]) // 2  # Centered horizontally
-
-    # Display the message with transparent background
-    overlay = np.copy(highlighted_image)
-    cv2.putText(overlay, message, (text_x, bottom_y), cv2.FONT_HERSHEY_SIMPLEX, 1.5, text_color, 3, cv2.LINE_AA)
-    
-    # Add transparency by blending images
-    alpha = 0.8  # Transparency factor
-    cv2.addWeighted(overlay, alpha, highlighted_image, 1 - alpha, 0, highlighted_image)
 
     output_path_name = os.path.join(output_folder, os.path.basename(image2_path))
 
     if os.path.exists(output_path_name):
         os.remove(output_path_name)
         
-    cv2.imwrite(output_path_name, highlighted_image)
-    
-    return output_path_name
-
-
-    correct_image = cv2.imread(image1_path)
-    student_image = cv2.imread(image2_path)
-
-    if correct_image.shape == student_image.shape:
-        difference = cv2.absdiff(correct_image, student_image)
-    else:
-        target_width = 700
-        target_height = 550
-        
-        correct_image_resized = resize_image(correct_image, target_width, target_height)
-        student_image_resized = resize_image(student_image, target_width, target_height)
-        
-        difference = cv2.absdiff(correct_image_resized, student_image_resized)
-
-    gray_difference = cv2.cvtColor(difference, cv2.COLOR_BGR2GRAY)
-    _, mask = cv2.threshold(gray_difference, 30, 255, cv2.THRESH_BINARY)
-
-    kernel = np.ones((5, 5), np.uint8)
-    mask = cv2.dilate(mask, kernel, iterations=2)
-
-    contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
-    result_copy = student_image.copy()
-    label_count = 1
-
-    # Highlight differences found or no differences
-    cropped_mask = mask[border_width:-border_width, border_width:-border_width]
-    highlighted_image = np.copy(result_copy)
-
-    if np.any(mask):
-        # Red highlights for differences
-        highlighted_image[border_width:-border_width, border_width:-border_width][cropped_mask != 0] = [0, 0, 255]
-        message = "Differences Found"
-        border_color = (0, 0, 255)  # Red
-        text_color = (0, 0, 255)    # Red
-    else:
-        # No differences found, display a transparent green overlay
-        message = "No Differences Found"
-        border_color = (0, 255, 0)  # Green
-        text_color = (0, 255, 0)    # Green
-
-        # Create a green overlay
-        green_overlay = np.full_like(highlighted_image, (0, 255, 0), dtype=np.uint8)
-
-        # Blend the green overlay with the original image (50% transparency)
-        alpha = 0.5  # Adjust the alpha value for transparency (0 = fully transparent, 1 = fully opaque)
-        highlighted_image = cv2.addWeighted(highlighted_image, 1 - alpha, green_overlay, alpha, 0)
-
-    # Draw rectangles for differences if any
-    for contour in contours:
-        x, y, w, h = cv2.boundingRect(contour)
-        cv2.rectangle(highlighted_image, (x, y), (x + w, y + h), border_color, 2)
-
-        # Position the label text to the right of the rectangle
-        text_x = x + w + 10  # Position the text 10 pixels to the right of the rectangle
-        text_y = y + h // 2  # Vertically center the text with the box
-
-        # Display larger and bolder label text
-        cv2.putText(highlighted_image, f'Diff-{label_count}', (text_x, text_y), 
-                    cv2.FONT_HERSHEY_SIMPLEX, 1.0, text_color, 3, cv2.LINE_AA)
-        label_count += 1
-
-    # Display the message on the top of the image
-    cv2.putText(highlighted_image, message, (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1.5, text_color, 3, cv2.LINE_AA)
-
-    output_path_name = os.path.join(output_folder, os.path.basename(image2_path))
-
-    if os.path.exists(output_path_name):
-        os.remove(output_path_name)
-        
-    cv2.imwrite(output_path_name, highlighted_image)
+    cv2.imwrite(output_path_name, result_copy)
     
     return output_path_name
 

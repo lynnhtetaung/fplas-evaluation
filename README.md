@@ -18,12 +18,39 @@ samples, guidance on mobile development, and a full API reference.
 # Correct answer title can show in the center for macOS.
 # Correct answer title can show in the left side for window and linux. ( Container Example )
 
+# If you want to modify default chrome dart file directly
 root@1081e2c33273:/app# vim /usr/local/flutter/packages/flutter_tools/lib/src/web/chrome.dart 
 
 
-Docker-compose explanation
+# Docker-compose explanation
 
 Interactive Shell:
 
 stdin_open: true and tty: true allow you to attach a terminal to the flutter-app container so you can manually run commands (e.g., flutter build web).
 Shared Volume: The shared-data volume is still used to store the built files, which are shared between flutter-app and nginx-app.
+
+
+# To upload Docker images to the DockerHub.
+
+docker tag <local_image_id> <dockerhub_username>/<repository_name>:<tag>
+Eg. 
+docker tag flutter-app 24091997/fplas-2024:flutter-app
+docker tag nginx-app 24091997/fplas-2024:nginx-app
+docker tag nplas-app 24091997/fplas-2024:nplas-app
+
+
+docker push <dockerhub_username>/<repository_name>:<tag>
+Eg.
+docker push 24091997/fplas-2024:flutter-app
+docker push 24091997/fplas-2024:nginx-app
+docker push 24091997/fplas-2024:nplas-app
+
+
+## need to install tesseract
+sudo apt update
+sudo apt install tesseract-ocr
+tesseract --version
+
+
+# reference docker file and index.html
+https://github.com/edwardinubuntu/flutter-web-dockerfile
