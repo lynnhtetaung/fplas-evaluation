@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(const MyApp());
-}
+void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -11,45 +9,36 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Container Example',
+      title: 'ListView Example',
       home: Container(
         decoration: BoxDecoration(
           border: Border.all(
             color: Colors.black,
-            width: 5.0,
+            width: 10.0,
           ),
         ),
         child: Scaffold(
           appBar: AppBar(
-            title: const Text('Container Example'),
+            title: const Text('ListView Example'),
           ),
-          body: Center(
-            child: Container(
-              width: 400,
-              height: 400,
-              decoration: BoxDecoration(
-                color: Colors.pink,
-                borderRadius: BorderRadius.circular(10),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.pink.withOpacity(0.2),
-                    spreadRadius: 5,
-                    blurRadius: 7,
-                    offset: const Offset(0, 3),
-                  ),
-                ],
-              ),
-              child: const Center(
-                child: Text(
-                  'Hello, Boss!',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 50,
-                    fontWeight: FontWeight.bold,
-                  ),
+          body: ListView.builder(
+            itemCount: 5,
+            itemBuilder: (BuildContext context, int index) {
+              // Calculate the item index in descending order
+              int itemIndex = 4 - index;
+              return ListTile(
+                title: Text('Item $itemIndex'),
+                subtitle: Text('This is the subtitle for item $itemIndex'),
+                leading: CircleAvatar(
+                  child: Text('$itemIndex'),
                 ),
-              ),
-            ),
+                // Change the trailing icon to a backward arrow
+                trailing: const Icon(Icons.arrow_back),
+                onTap: () {
+                  print('Tapped item $itemIndex');
+                },
+              );
+            },
           ),
         ),
       ),

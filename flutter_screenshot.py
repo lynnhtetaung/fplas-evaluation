@@ -30,7 +30,7 @@ def run_flutter_and_screenshot(main_dart_file_content, screenshot_path):
             browser = p.chromium.launch(headless=True)
             context = browser.new_context()
             page = context.new_page()
-            page.goto(f"http://nginx-app:80")  # Nginx will serve from port 80 in the nginx-app container
+            page.goto(f"http://localhost:8080")  # Nginx will serve from port 80 in the nginx-app container
 
             # Ensure the page is fully loaded
             page.wait_for_selector('body', timeout=60000)  # Wait for body to be present

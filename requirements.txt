@@ -7,3 +7,4 @@ scipy
 Pillow
 pytest-playwright
 importlib-metadata
+matplotlib

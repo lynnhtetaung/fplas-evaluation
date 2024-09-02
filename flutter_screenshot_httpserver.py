@@ -9,7 +9,7 @@ flutter_executable = '/home/lynnhtetaung/flutter/bin/flutter'
 
 template_main_dart_path = os.path.join(template_project_dir, 'lib', 'main.dart')
 
-FIXED_FLUTTER_PORT = 8080
+FIXED_FLUTTER_PORT = 8081
 
 # Function to rebuild Flutter and take a screenshot
 def run_flutter_and_screenshot(main_dart_file_content, screenshot_path):

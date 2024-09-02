@@ -32,18 +32,20 @@ Shared Volume: The shared-data volume is still used to store the built files, wh
 
 # To upload Docker images to the DockerHub.
 
+docker login
+
 docker tag <local_image_id> <dockerhub_username>/<repository_name>:<tag>
 Eg. 
-docker tag flutter-app 24091997/fplas-2024:flutter-app
-docker tag nginx-app 24091997/fplas-2024:nginx-app
-docker tag nplas-app 24091997/fplas-2024:nplas-app
+docker tag flutter-app 24091997/fplas-backend-2024:v1
+docker tag nginx-app 24091997/fplas-nginx-2024:v1
+docker tag nplas-app 24091997/fplas-frontend-2024:v1
 
 
 docker push <dockerhub_username>/<repository_name>:<tag>
 Eg.
-docker push 24091997/fplas-2024:flutter-app
-docker push 24091997/fplas-2024:nginx-app
-docker push 24091997/fplas-2024:nplas-app
+docker push 24091997/fplas-backend-2024:v1
+docker push 24091997/fplas-nginx-2024:v1
+docker push 24091997/fplas-frontend-2024:v1
 
 
 ## need to install tesseract
@@ -54,3 +56,10 @@ tesseract --version
 
 # reference docker file and index.html
 https://github.com/edwardinubuntu/flutter-web-dockerfile
+
+
+# To check image is exist or not 
+docker cp plas-flutter-app-1:/app/static/output/studentID_Flutter_CMP_Basic_problemNumber.png .
+
+docker cp plas-flutter-app-1:/app/static/output/4D23414212_Flutter_CMP_Basic_p3.png .
+
