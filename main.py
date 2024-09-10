@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify, render_template
 import os
 from handlers import NewImageHandler
 from watchdog.observers import Observer
-from flutter_screenshot import run_flutter_and_screenshot
+from flutter_screenshot_httpserver import run_flutter_and_screenshot
 from image_similarity_old import check_image_size_and_similarity
 
 app = Flask(__name__)
