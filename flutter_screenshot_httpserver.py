@@ -1,7 +1,12 @@
 import os
 import time
+import shutil
 import subprocess
+
 from playwright.sync_api import sync_playwright
+from flask import Flask
+
+app = Flask(__name__)
 
 # Path configurations
 template_project_dir = '/home/lynnhtetaung/Documents/develop/plas/flutter_app' # for Local
@@ -10,6 +15,8 @@ flutter_executable = '/home/lynnhtetaung/flutter/bin/flutter'
 template_main_dart_path = os.path.join(template_project_dir, 'lib', 'main.dart')
 
 FIXED_FLUTTER_PORT = 8081
+
+error_image_path = os.path.join(app.static_folder, 'error_images', 'error_image.png')  # Path to your error image
 
 # Function to rebuild Flutter and take a screenshot
 def run_flutter_and_screenshot(main_dart_file_content, screenshot_path):
@@ -26,8 +33,14 @@ def run_flutter_and_screenshot(main_dart_file_content, screenshot_path):
 
         # Rebuild Flutter web project
         print("Building Flutter web project...")
-        flutter_process = subprocess.Popen([flutter_executable, 'build', 'web'], cwd=template_project_dir)
-        flutter_process.wait()  # Wait for the build to complete
+        build_process = subprocess.Popen([flutter_executable, 'build', 'web'], cwd=template_project_dir)
+        build_process.wait()  # Wait for the build to complete
+
+        # Check if the build was successful
+        if build_process.returncode != 0:
+            print("Flutter build failed. Stopping process.")
+            shutil.copy(error_image_path, screenshot_path)  # Copy error image
+            return  # Stop further processing
 
         # Start the web server after the Flutter build
         print(f"Starting the web server on port {FIXED_FLUTTER_PORT}...")

@@ -13,6 +13,8 @@ template_main_dart_path = os.path.join(template_project_dir, 'lib', 'main.dart')
 
 FIXED_FLUTTER_PORT = 80  # Nginx will serve on port 80
 
+error_image_path = os.path.join(app.static_folder, 'error_images', 'error_image.png')  # Path to your error image
+
 # Function to rebuild Flutter and take a screenshot
 def run_flutter_and_screenshot(main_dart_file_content, screenshot_path):
     try:
@@ -22,15 +24,21 @@ def run_flutter_and_screenshot(main_dart_file_content, screenshot_path):
 
         # Rebuild Flutter web project
         print("Building Flutter web project...")
-        flutter_process = subprocess.Popen([flutter_executable, 'build', 'web'], cwd=template_project_dir)
-        flutter_process.wait()  # Wait for the build to complete
+        build_process = subprocess.Popen([flutter_executable, 'build', 'web'], cwd=template_project_dir)
+        build_process.wait()  # Wait for the build to complete
+
+        # Check if the build was successful
+        if build_process.returncode != 0:
+            print("Flutter build failed. Stopping process.")
+            shutil.copy(error_image_path, screenshot_path)  # Copy error image
+            return  # Stop further processing
 
         # Take screenshot using Playwright
         with sync_playwright() as p:
             browser = p.chromium.launch(headless=True)
             context = browser.new_context()
             page = context.new_page()
-            page.goto(f"http://localhost:8080")  # Nginx will serve from port 80 in the nginx-app container
+            page.goto(f"http://nginx-app:80")  # Nginx will serve from port 80 in the nginx-app container
 
             # Ensure the page is fully loaded
             page.wait_for_selector('body', timeout=60000)  # Wait for body to be present
