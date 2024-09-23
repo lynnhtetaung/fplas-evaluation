@@ -1,0 +1,3 @@
+Playwright install on macOS
+
+- command => playwright install
