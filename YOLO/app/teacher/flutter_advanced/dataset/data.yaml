@@ -1,0 +1,13 @@
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 2
+names: ['icon', 'text']
+
+roboflow:
+  workspace: device-detection
+  project: flutter-basic-exercise-model
+  version: 3
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/device-detection/flutter-basic-exercise-model/dataset/3

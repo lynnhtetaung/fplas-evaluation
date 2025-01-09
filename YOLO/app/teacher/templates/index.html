@@ -3,56 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teacher: YOLO Training</title>
+    <title>Flutter Component Generator</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f2f5;
             margin: 0;
             padding: 0;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
+            justify-content: flex-start;
             height: 100vh;
         }
+
         .container {
             background: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            width: 1000px;
-            padding: 54px;
+            padding: 40px;
             text-align: center;
+            width: 100%;
+            max-width: 600px;
+            margin-top: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
+
         h1 {
             color: #333;
+            font-size: 24px;
+            margin-bottom: 30px;
         }
-        label {
-            display: block;
-            text-align: left;
-            margin-top: 10px;
-            margin-bottom: 5px;
-            color: #555;
+
+        .button-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
         }
-        select, input {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 14px;
-        }
+
         button {
             background-color: #4CAF50;
             color: white;
-            padding: 10px 20px;
+            padding: 12px 30px;
             border: none;
-            border-radius: 4px;
+            border-radius: 5px;
             cursor: pointer;
             font-size: 16px;
+            transition: background-color 0.3s, transform 0.3s;
+            width: 48%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
+
+        button i {
+            margin-right: 10px;
+        }
+
         button:hover {
             background-color: #45a049;
+            transform: scale(1.05);
         }
+
+        button:active {
+            background-color: #3e8e41;
+        }
+
         .spinner {
             display: none;
             margin: 20px auto;
@@ -63,6 +79,7 @@
             height: 50px;
             animation: spin 1s linear infinite;
         }
+
         @keyframes spin {
             0% {
                 transform: rotate(0deg);
@@ -71,76 +88,125 @@
                 transform: rotate(360deg);
             }
         }
+
         .result {
-            margin-top: 15px;
-            padding: 10px;
+            margin-top: 20px;
+            padding: 15px;
             background: #f9f9f9;
             border: 1px solid #ddd;
-            border-radius: 4px;
+            border-radius: 5px;
             color: #333;
+            min-height: 50px;
+            max-height: 150px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+
+        .success {
+            color: green;
+            font-weight: bold;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 600px) {
+            .container {
+                width: 90%;
+                padding: 20px;
+            }
+
+            button {
+                width: 100%;
+                max-width: none;
+                padding: 12px;
+                font-size: 14px;
+            }
+
+            h1 {
+                font-size: 20px;
+            }
+
+            .button-row {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            button {
+                width: 100%;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Teacher: YOLO Model Training</h1>
-        <form id="trainForm">
-            <label for="dataPath">Dataset Path:</label>
-            <select id="dataPath" name="dataPath" required>
-                <option value="">Select a dataset</option>
-                <option value="/home/lynnhtetaung/Documents/develop/plas/flutter_app/YOLO/app/teacher/flutter-basic/dataset/data.yaml">Flutter Basic</option>
-                <option value="/home/lynnhtetaung/Documents/develop/plas/flutter_app/YOLO/flutter-advanced/dataset/data.yaml">Flutter Advanced</option>
-            </select>
-            <label for="epochs">Epochs:</label>
-            <input type="number" id="epochs" name="epochs" value="25" required>
-            <label for="imgsz">Image Size:</label>
-            <input type="number" id="imgsz" name="imgsz" value="416" required>
-            <button type="submit">Start Training</button>
-        </form>
+        <h1>Flutter UI Component Generator</h1>
+
+        <!-- Buttons for triggering script generation, placed in rows -->
+        <div class="button-row">
+            <button id="generateIcon">
+                <i class="fas fa-image"></i> Generate Icon
+            </button>
+            <button id="generateCheckbox">
+                <i class="fas fa-check-square"></i> Generate Checkbox
+            </button>
+        </div>
+        
+        <div class="button-row">
+            <button id="generateText">
+                <i class="fas fa-font"></i> Generate Text
+            </button>
+            <button id="generateDropdown">
+                <i class="fas fa-caret-down"></i> Generate Dropdown
+            </button>
+        </div>
+
+        <div class="button-row">
+            <button id="generateButton">
+                <i class="fas fa-hand-pointer"></i> Generate Button
+            </button>
+        </div>
+
         <div class="spinner" id="spinner"></div>
         <div class="result" id="trainResult"></div>
     </div>
 
     <script>
-        const form = document.getElementById("trainForm");
-        const spinner = document.getElementById("spinner");
-        const resultDiv = document.getElementById("trainResult");
-
-        form.addEventListener("submit", async (event) => {
-            event.preventDefault();
-            resultDiv.innerText = "";
-            spinner.style.display = "block";
-
-            const dataPath = document.getElementById("dataPath").value;
-            const epochs = document.getElementById("epochs").value;
-            const imgsz = document.getElementById("imgsz").value;
-
-            if (!dataPath) {
-                spinner.style.display = "none";
-                resultDiv.innerHTML = `<span style="color: red;">Please select a dataset.</span>`;
-                return;
-            }
+        // Function to handle generating each component
+        async function generateComponent(endpoint) {
+            document.getElementById("trainResult").innerText = "";  // Clear previous results
+            document.getElementById("spinner").style.display = "block";  // Show spinner
 
             try {
-                const response = await fetch("/train", {
+                const response = await fetch(endpoint, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ data_path: dataPath, epochs: epochs, imgsz: imgsz }),
                 });
 
                 const result = await response.json();
-                spinner.style.display = "none";
+                document.getElementById("spinner").style.display = "none";  // Hide spinner
 
                 if (response.ok) {
-                    resultDiv.innerHTML = `<span style="color: green;">${result.message}</span>`;
+                    document.getElementById("trainResult").innerHTML = `<pre class="success">${result.output}</pre>`;
                 } else {
-                    resultDiv.innerHTML = `<span style="color: red;">${result.error}</span>`;
+                    document.getElementById("trainResult").innerHTML = `<span class="error">Error: ${result.error}</span>`;
                 }
             } catch (error) {
-                spinner.style.display = "none";
-                resultDiv.innerHTML = `<span style="color: red;">Unexpected error occurred: ${error.message}</span>`;
+                document.getElementById("spinner").style.display = "none";
+                document.getElementById("trainResult").innerHTML = `<span class="error">Unexpected error: ${error.message}</span>`;
             }
-        });
+        }
+
+        // Adding event listeners for each button
+        document.getElementById("generateIcon").addEventListener("click", () => generateComponent("/generate/icon"));
+        document.getElementById("generateCheckbox").addEventListener("click", () => generateComponent("/generate/checkbox"));
+        document.getElementById("generateText").addEventListener("click", () => generateComponent("/generate/text"));
+        document.getElementById("generateDropdown").addEventListener("click", () => generateComponent("/generate/dropdown"));
+        document.getElementById("generateButton").addEventListener("click", () => generateComponent("/generate/button"));
     </script>
 </body>
 </html>

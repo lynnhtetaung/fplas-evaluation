@@ -29,7 +29,7 @@ def upload():
 
     screenshot_path = os.path.join(screenshot_save_dir, f'{student_id}_{exercise_name}_{exercise_number}.png')
 
-     # Run the Flutter web rebuild and take the screenshot
+    # Run the Flutter web rebuild and take the screenshot
     try:
         run_flutter_and_screenshot(main_dart_file_content, screenshot_path)
     except Exception as e:
@@ -39,6 +39,7 @@ def upload():
     if not os.path.exists(screenshot_path):
         return jsonify({"status": "error", "message": "Screenshot not found"}), 500
 
+    # Run image similarity function if the screenshot was created
     correct_image_path = os.path.join(correct_images_dir, f'correct_answer_exercise_{exercise_number}.png')
     result = check_image_size_and_similarity([correct_image_path], screenshot_path, output_folder)
 

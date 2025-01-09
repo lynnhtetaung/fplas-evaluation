@@ -41,6 +41,7 @@ RUN flutter build web
 RUN python3 -m venv /venv \
     && /venv/bin/pip install --upgrade pip setuptools wheel \
     && /venv/bin/pip install flask watchdog opencv-python Pillow pytest-playwright \
+    && /venv/bin/pip install ultralytics \ 
     && /venv/bin/playwright install \
     && /venv/bin/playwright install-deps
 
