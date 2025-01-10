@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -27,6 +28,7 @@
             margin-top: 20px;
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: relative; /* Added this line for absolute positioning of button */
         }
 
         h1 {
@@ -69,6 +71,37 @@
             background-color: #3e8e41;
         }
 
+        #modelTrainButton {
+            background-color: #007bff;
+            position: absolute; /* Changed to absolute positioning */
+            bottom: 20px; /* Adjust the position inside the container */
+            right: 20px; /* Adjust the position inside the container */
+            width: auto;
+            font-size: 16px;
+            padding: 8px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        #modelTrainButton i {
+            margin-right: 10px;
+        }
+
+        #modelTrainButton:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
+        #modelTrainButton:active {
+            background-color: #004085;
+        }
+
         .spinner {
             display: none;
             margin: 20px auto;
@@ -84,6 +117,7 @@
             0% {
                 transform: rotate(0deg);
             }
+
             100% {
                 transform: rotate(360deg);
             }
@@ -142,23 +176,26 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
-        <h1>Flutter UI Component Generator</h1>
+        <h1>Teacher: Flutter UI Component Generator</h1>
+        <hr>
 
         <!-- Buttons for triggering script generation, placed in rows -->
         <div class="button-row">
-            <button id="generateIcon">
-                <i class="fas fa-image"></i> Generate Icon
-            </button>
-            <button id="generateCheckbox">
-                <i class="fas fa-check-square"></i> Generate Checkbox
-            </button>
-        </div>
-        
-        <div class="button-row">
             <button id="generateText">
                 <i class="fas fa-font"></i> Generate Text
+            </button>
+            <button id="generateButton">
+                <i class="fas fa-hand-pointer"></i> Generate Button
+            </button>
+        </div>
+
+        <div class="button-row">
+            
+            <button id="generateCheckbox">
+                <i class="fas fa-check-square"></i> Generate Checkbox
             </button>
             <button id="generateDropdown">
                 <i class="fas fa-caret-down"></i> Generate Dropdown
@@ -166,13 +203,21 @@
         </div>
 
         <div class="button-row">
-            <button id="generateButton">
-                <i class="fas fa-hand-pointer"></i> Generate Button
+            <button id="generateIcon">
+                <i class="fas fa-image"></i> Generate Icon
             </button>
         </div>
 
         <div class="spinner" id="spinner"></div>
-        <div class="result" id="trainResult"></div>
+        <div class="result" id="trainResult"></div><hr>
+
+        <!-- New button to redirect to the model-train page -->
+        <div class="button-row">
+            <button id="modelTrainButton">
+                <i class="fas fa-cogs"></i> >> Go to Train
+            </button>
+        </div>
+
     </div>
 
     <script>
@@ -207,6 +252,12 @@
         document.getElementById("generateText").addEventListener("click", () => generateComponent("/generate/text"));
         document.getElementById("generateDropdown").addEventListener("click", () => generateComponent("/generate/dropdown"));
         document.getElementById("generateButton").addEventListener("click", () => generateComponent("/generate/button"));
+
+        // Event listener for redirect button
+        document.getElementById("modelTrainButton").addEventListener("click", () => {
+            window.location.href = "/model-train";  // Redirect to model-train page
+        });
     </script>
 </body>
+
 </html>

@@ -77,6 +77,7 @@ Use libraries like PubLayNet for layout parsing, which can detect UI components 
 Advantages:
 Faster implementation with fewer training resources.
 You only need to fine-tune the model for your specific needs.
+
 4. Simplified YOLO Training
 If you stick with YOLO, reduce complexity by:
 
@@ -90,6 +91,7 @@ If a significant part of your detection involves identifying text elements (e.g.
 Use OCR libraries like Tesseract or Google Vision API to extract text and then detect surrounding components based on spatial relationships.
 Advantages:
 Focuses detection on textual components without requiring labeled photos.
+
 6. Hierarchical Detection
 Use hierarchical detection to simplify the task:
 

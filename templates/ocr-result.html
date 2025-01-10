@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OCR Result</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .image-container {
+            margin: 20px;
+            text-align: center;
+        }
+
+        .image-container img {
+            max-width: 80%;
+            max-height: 400px;
+            margin-bottom: 10px;
+        }
+
+        .percentage {
+            font-size: 18px;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+
+        .buttons {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .buttons a {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 5px;
+        }
+
+        .buttons a:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>OCR Detection Result</h1>
+
+    <div class="container">
+        <!-- <div class="image-container">
+            <h2>Student Image</h2>
+            <img src="http://localhost:5000/static/{{ student_image }}" alt="Student Image">
+        </div> -->
+
+        <div class="image-container">
+            <h2>Result Image</h2>
+            <img src="http://localhost:5000/static/{{ result_image }}" alt="OCR Result">
+        </div>
+
+        <div class="percentage">
+            <p>Detection Score: {{ detection_percentage }}%</p>
+        </div>
+
+    </div>
+
+</body>
+</html>

@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
         ),
         body: Center(
           child: Icon(
-            Icons.home,
+            Icons.settings,
             size: 100.0,
             color: Colors.blue,  // Change the color as per your preference
           ),
