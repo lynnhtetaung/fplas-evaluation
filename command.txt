@@ -1,0 +1,36 @@
+## One by one execution
+===========================================================================
+## p1
+python3 script.py --dart_content "/home/lynnhtetaung/Documents/develop/plas/fplas-evaluation/static/dart_files/p1" --screenshot_folder "/home/lynnhtetaung/Documents/develop/plas/fplas-evaluation/static/screenshots" --exercise_number "p1"
+
+## p2
+python3 script.py --dart_content "/home/lynnhtetaung/Documents/develop/plas/fplas-evaluation/static/dart_files/p2" --screenshot_folder "/home/lynnhtetaung/Documents/develop/plas/fplas-evaluation/static/screenshots" --exercise_number "p2"
+
+## p3
+python3 script.py --dart_content "/home/lynnhtetaung/Documents/develop/plas/fplas-evaluation/static/dart_files/p3" --screenshot_folder "/home/lynnhtetaung/Documents/develop/plas/fplas-evaluation/static/screenshots" --exercise_number "p3"
+
+## p4
+python3 script.py --dart_content "/home/lynnhtetaung/Documents/develop/plas/fplas-evaluation/static/dart_files/p4" --screenshot_folder "/home/lynnhtetaung/Documents/develop/plas/fplas-evaluation/static/screenshots" --exercise_number "p4"
+
+## p5
+python3 script.py --dart_content "/home/lynnhtetaung/Documents/develop/plas/fplas-evaluation/static/dart_files/p5" --screenshot_folder "/home/lynnhtetaung/Documents/develop/plas/fplas-evaluation/static/screenshots" --exercise_number "p5"
+=============================================================================
+
+==================================
+## For sequential execution
+==================================
+Running script for p1...
+Finished p1.
+Running script for p2...
+Finished p2.
+...
+All scripts executed successfully.
+
+==================================
+## For parallel execution
+==================================
+Running script for p1 in the background...
+Running script for p2 in the background...
+...
+All scripts executed successfully in parallel.
+==================================
