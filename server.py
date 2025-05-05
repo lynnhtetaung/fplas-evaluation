@@ -62,7 +62,7 @@ def run_dart():
     def generate():
         yield f"🔧 Executing script for {folder}/{filename}...\n"
         command = [
-            'python3', 'script_single.py',
+            'python3', 'script.py',
             '--screenshot_folder', screenshot_dir,
             '--exercise_number', folder,
             '--dart_file', filename

@@ -1,138 +1,212 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title> FPLAS Evaluation </title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <title>FPLAS Evaluation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Fira+Code&display=swap"
+        rel="stylesheet">
     <style>
         body {
             font-family: 'Roboto', sans-serif;
             padding: 20px;
             background: linear-gradient(145deg, #e3f2fd, #fce4ec);
         }
+
         h1 {
-            color: #2c3e50;
             text-align: center;
             font-size: 2.4em;
+            color: #2c3e50;
         }
-        h2 {
-            color: #37474f;
-            margin-bottom: 10px;
+
+        .dropdown-select {
+            margin: 30px auto;
+            display: block;
+            font-size: 16px;
+            padding: 10px 18px;
+            border-radius: 8px;
+            border: 1px solid #90caf9;
+            background: white;
+            color: #1565c0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
-        .gallery {
+
+        .group-header {
             display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: flex-start;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 20px;
         }
-        .card {
-            width: 220px;
-            background: #ffffff;
-            border-radius: 12px;
-            padding: 16px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+        .group-button {
+            font-size: 14px;
+            padding: 8px 18px;
+            background: linear-gradient(to right, #42a5f5, #1e88e5);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
         }
-        .card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 6px 18px rgba(0,0,0,0.15);
-        }
+
         .icon {
             font-size: 48px;
             color: #42a5f5;
             text-align: center;
         }
-        .filename {
-            margin-top: 12px;
-            font-weight: 600;
-            font-size: 15px;
-            color: #37474f;
-            word-break: break-word;
-            text-align: center;
-        }
-        .group-header {
+
+        .gallery {
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-top: 30px;
+            flex-wrap: wrap;
+            gap: 24px;
+            justify-content: flex-start;
+            margin-top: 20px;
         }
-        .group-button {
+
+        .card {
+            width: 300px;
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            word-wrap: break-word;
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            background: #e3f2fd;
+        }
+
+        .filename {
+            margin-top: 14px;
+            font-weight: 600;
+            font-size: 17px;
+            color: #1e88e5;
+            text-align: center;
+            word-wrap: break-word;
+            word-break: break-word;
+        }
+
+
+        .pagination {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .pagination button {
+            padding: 8px 14px;
+            margin: 0 4px;
             font-size: 14px;
-            padding: 8px 18px;
             background: #42a5f5;
             color: white;
             border: none;
             border-radius: 6px;
             cursor: pointer;
-            transition: background 0.3s;
         }
-        .group-button:hover {
-            background: #1e88e5;
-        }
-        .group-button:disabled {
-            background: #90a4ae;
+
+        .pagination button:disabled {
+            background: #b0bec5;
             cursor: not-allowed;
         }
+
         textarea {
             width: 100%;
-            height: 220px;
+            height: 260px;
             margin-top: 40px;
-            font-family: 'Courier New', monospace;
+            font-family: 'Fira Code', monospace;
             font-size: 14px;
             padding: 14px;
-            border-radius: 8px;
-            border: 1px solid #cfd8dc;
-            background: #fafafa;
-            color: #263238;
+            border-radius: 10px;
+            border: 1px solid #b0bec5;
+            background: #263238;
+            color: #ffffff;
             resize: vertical;
-            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
-        }
-        .dropdown-select {
-            margin: 20px auto 30px;
-            display: block;
-            font-size: 16px;
-            padding: 8px 16px;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-            background: white;
+            box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.2);
         }
     </style>
 </head>
+
 <body>
+
     <h1>Flutter PLAS Evaluation</h1>
 
-    <select class="dropdown-select" onchange="scrollToGroup(this.value)">
-        <option value="">-- Jump to Location --</option>
-        <option value="p1">p1</option>
-        <option value="p2">p2</option>
-        <option value="p3">p3</option>
-        <option value="p4">p4</option>
+    <select class="dropdown-select" id="groupSelector" onchange="showGroup(this.value)">
+        <option value="">-- Select Group --</option>
+        {% for folder in projects.keys() %}
+        <option value="{{ folder }}" {% if loop.first %}selected{% endif %}>{{ folder }}</option>
+        {% endfor %}
     </select>
 
-    {% for folder, files in projects.items() %}
-        <div class="group-header" id="{{ folder }}">
-            <h2>{{ folder }}</h2>
-            <button class="group-button" onclick="runGroup(this, '{{ folder }}')">▶ Run Group</button>
-        </div>
-        <div class="gallery">
-            {% for file in files %}
-                <div class="card">
+    <div id="groupContainer">
+        {% for folder, files in projects.items() %}
+        <div class="group" id="group-{{ folder }}" style="{% if not loop.first %}display:none;{% endif %}">
+            <div class="group-header">
+                <h2>{{ folder }}</h2>
+                <button class="group-button" onclick="runGroup(this, '{{ folder }}')">▶ Run Group</button>
+            </div>
+            <div class="gallery" id="gallery-{{ folder }}">
+                {% for file in files %}
+                <div class="card" data-folder="{{ folder }}"
+                    onclick="runScript(this, '{{ folder }}', '{{ file.dart }}')">
                     <div class="icon">🧾</div>
                     <div class="filename">{{ file.dart }}</div>
                 </div>
-            {% endfor %}
+                {% endfor %}
+            </div>
+            <div class="pagination" id="pagination-{{ folder }}"></div>
         </div>
-    {% endfor %}
+        {% endfor %}
+    </div>
 
     <textarea id="output" readonly>Click a Dart file or Run Group to see output...</textarea>
 
     <script>
-        function runScript(button, folder, filename) {
+        const itemsPerPage = 10;
+
+        function showGroup(folderId) {
+            document.querySelectorAll('.group').forEach(g => g.style.display = 'none');
+            const groupDiv = document.getElementById('group-' + folderId);
+            if (groupDiv) groupDiv.style.display = 'block';
+            setupPagination(folderId);
+        }
+
+        function setupPagination(folderId) {
+            const cards = document.querySelectorAll(`.card[data-folder="${folderId}"]`);
+            const gallery = document.getElementById(`gallery-${folderId}`);
+            const pagination = document.getElementById(`pagination-${folderId}`);
+            let currentPage = 1;
+
+            function renderPage(page) {
+                const start = (page - 1) * itemsPerPage;
+                const end = start + itemsPerPage;
+                cards.forEach((card, index) => {
+                    card.style.display = index >= start && index < end ? 'block' : 'none';
+                });
+
+                pagination.innerHTML = '';
+                const totalPages = Math.ceil(cards.length / itemsPerPage);
+                for (let i = 1; i <= totalPages; i++) {
+                    const btn = document.createElement('button');
+                    btn.textContent = i;
+                    btn.disabled = i === page;
+                    btn.onclick = () => {
+                        currentPage = i;
+                        renderPage(currentPage);
+                    };
+                    pagination.appendChild(btn);
+                }
+            }
+
+            renderPage(currentPage);
+        }
+
+        function runScript(card, folder, filename) {
             const output = document.getElementById('output');
             output.value = `▶ Running ${filename}...\n`;
-            button.disabled = true;
-            button.textContent = '⏳ Running...';
-
             fetch('/run-dart', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -141,21 +215,15 @@
                 const reader = response.body.getReader();
                 const decoder = new TextDecoder();
                 let text = "";
-
                 function read() {
                     reader.read().then(({ done, value }) => {
-                        if (done) {
-                            button.disabled = false;
-                            button.textContent = '▶ Run';
-                            return;
-                        }
+                        if (done) return;
                         text += decoder.decode(value);
                         output.value = text;
                         output.scrollTop = output.scrollHeight;
                         read();
                     });
                 }
-
                 read();
             });
         }
@@ -165,7 +233,6 @@
             output.value = `▶ Running group ${folder}...\n`;
             button.disabled = true;
             button.textContent = '⏳ Running...';
-
             fetch('/run-dart-group', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -174,7 +241,6 @@
                 const reader = response.body.getReader();
                 const decoder = new TextDecoder();
                 let text = "";
-
                 function read() {
                     reader.read().then(({ done, value }) => {
                         if (done) {
@@ -188,17 +254,19 @@
                         read();
                     });
                 }
-
                 read();
             });
         }
 
-        function scrollToGroup(folderId) {
-            if (folderId) {
-                const el = document.getElementById(folderId);
-                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // Show default group on load
+        window.onload = () => {
+            const defaultGroup = document.getElementById('groupSelector').value;
+            if (defaultGroup) {
+                showGroup(defaultGroup);
             }
-        }
+        };
     </script>
+
 </body>
+
 </html>
