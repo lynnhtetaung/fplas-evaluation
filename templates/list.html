@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Image Compare List</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 20px;
+      background-color: #f9f9f9;
+    }
+
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+
+    .search-bar {
+      text-align: center;
+      margin: 30px 0 20px 0;
+    }
+
+    .search-bar input {
+      width: 320px;
+      padding: 12px 16px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 25px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      outline: none;
+      transition: 0.3s;
+    }
+
+    .search-bar input:focus {
+      border-color: #4A90E2;
+      box-shadow: 0 0 8px rgba(74, 144, 226, 0.3);
+    }
+
+    .gallery {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 30px;
+      justify-content: center;
+    }
+
+    .thumb {
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 16px;
+      width: 520px;
+      text-align: center;
+      background-color: #fff;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .thumb-images {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .thumb-images img {
+      width: 220px;
+      height: auto;
+      border: 2px solid #999;
+      border-radius: 4px;
+    }
+
+    .thumb-title {
+      font-size: 18px;
+      margin-top: 12px;
+      font-weight: bold;
+      color: #007BFF;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
+    .pagination {
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    .pagination button {
+      margin: 0 5px;
+      padding: 8px 16px;
+      font-size: 16px;
+      border: none;
+      background-color: #007BFF;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .pagination button:disabled {
+      background-color: #ccc;
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 10;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.8);
+    }
+
+    .modal-content {
+      background-color: #fff;
+      margin: 60px auto;
+      padding: 20px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 1100px;
+      text-align: center;
+    }
+
+    .modal-images {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+
+    .modal-images img {
+      max-width: 480px;
+      width: 100%;
+      border: 3px solid #000;
+      border-radius: 8px;
+    }
+
+    .close {
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      color: #aaa;
+      cursor: pointer;
+    }
+
+    .close:hover {
+      color: #000;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>🖼️ Output UI Image Comparison</h2>
+
+  <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="🔍 Search by filename..." onkeyup="filterThumbnails()">
+  </div>
+
+  <div class="gallery" id="thumbnailGallery">
+    {% for p in projects %}
+    <div class="thumb" data-filename="{{ p }}">
+      <div class="thumb-images">
+        <img src="{{ url_for('static', filename='screenshots/' ~ p) }}" alt="Screenshot of {{ p }}">
+        <img src="{{ url_for('static', filename='output/' ~ p) }}" alt="Output of {{ p }}">
+      </div>
+      <div class="thumb-title" onclick="openModal('{{ p }}')">{{ p }}</div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="pagination" id="pagination"></div>
+
+  <!-- MODAL -->
+  <div id="imageModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <h3 id="modalTitle"></h3>
+      <div class="modal-images">
+        <div>
+          <p><strong>Screenshot</strong></p>
+          <img id="modalScreenshot" src="">
+        </div>
+        <div>
+          <p><strong>Output</strong></p>
+          <img id="modalOutput" src="">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const itemsPerPage = 6;
+    const gallery = document.getElementById('thumbnailGallery');
+    const thumbnails = Array.from(gallery.children);
+    const pagination = document.getElementById('pagination');
+
+    let currentPage = 1;
+    let filteredThumbnails = thumbnails;
+
+    function showPage(page) {
+      currentPage = page;
+      const start = (page - 1) * itemsPerPage;
+      const end = start + itemsPerPage;
+
+      thumbnails.forEach(thumb => thumb.style.display = 'none');
+      filteredThumbnails.slice(start, end).forEach(thumb => thumb.style.display = 'block');
+
+      updatePagination();
+    }
+
+    function updatePagination() {
+      const pageCount = Math.ceil(filteredThumbnails.length / itemsPerPage);
+      pagination.innerHTML = '';
+
+      for (let i = 1; i <= pageCount; i++) {
+        const btn = document.createElement('button');
+        btn.textContent = i;
+        btn.onclick = () => showPage(i);
+        if (i === currentPage) btn.disabled = true;
+        pagination.appendChild(btn);
+      }
+    }
+
+    function filterThumbnails() {
+      const search = document.getElementById('searchInput').value.toLowerCase();
+      filteredThumbnails = thumbnails.filter(t =>
+        t.getAttribute('data-filename').toLowerCase().includes(search)
+      );
+      showPage(1);
+    }
+
+    // Show modal
+    function openModal(filename) {
+      document.getElementById('modalTitle').textContent = filename;
+      document.getElementById('modalScreenshot').src = `/static/screenshots/${filename}`;
+      document.getElementById('modalOutput').src = `/static/output/${filename}`;
+      document.getElementById('imageModal').style.display = 'block';
+    }
+
+    // Close modal
+    function closeModal() {
+      document.getElementById('imageModal').style.display = 'none';
+    }
+
+    // Initial display
+    filterThumbnails();
+  </script>
+
+</body>
+</html>

@@ -2,12 +2,45 @@ import 'package:flutter/material.dart';
 
 void main() => runApp(const MyApp());
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  bool isUniversityChecked = false;
+  bool isCatChecked = false;
+  bool isStationChecked = true;
+
+  String selectedImage = 'assets/station.jpg';
+
+  void updateChecked(String label) {
+    setState(() {
+      if (label == 'University') {
+        isUniversityChecked = true;
+        isCatChecked = false;
+        isStationChecked = false;
+        selectedImage = 'assets/university.jpg';
+      } else if (label == 'Cat') {
+        isUniversityChecked = false;
+        isCatChecked = true;
+        isStationChecked = false;
+        selectedImage = 'assets/cat.png';
+      } else if (label == 'Station') {
+        isUniversityChecked = false;
+        isCatChecked = false;
+        isStationChecked = true;
+        selectedImage = 'assets/station.jpg';
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    const title = 'Exercise 3 - Horizontal ListView';
+
+    const title = 'Exercise 5 - Checkbox';
 
     return MaterialApp(
       title: title,
@@ -15,47 +48,82 @@ class MyApp extends StatelessWidget {
         decoration: BoxDecoration(
           border: Border.all(
             color: Colors.black, // Border color
-            width: 10.0, // Border width for the entire Scaffold
+            width: 10.0, // Border width
           ),
         ),
         child: Scaffold(
           appBar: AppBar(
             title: const Text(title),
             backgroundColor: Colors.blue,
-             titleTextStyle: TextStyle(
+            titleTextStyle: TextStyle(
               color: Colors.white, // AppBar title text color
               fontWeight: FontWeight.bold, // AppBar title text weight
               fontSize: 30, // AppBar title text size
             ),
           ),
-          body: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),  // Padding to keep the ListView away from the border
-              child: Container(
-                height: 300,  // Height of the container (adjust as necessary)
-                child: ListView(
-                  scrollDirection: Axis.horizontal, // Set to horizontal scrolling
-                  children: <Widget>[
-                    Container(
-                      width: 400,
-                      color: Colors.blue,
-                      alignment: Alignment.center,
-                    ),
-                    const SizedBox(width: 20),  // Spacing between containers
-                    Container(
-                      width: 400,
-                      color: Colors.white,
-                      alignment: Alignment.center,
-                    ),
-                    const SizedBox(width: 20),  // Spacing between containers
-                    Container(
-                      width: 450,
-                      color: Colors.red,
-                      alignment: Alignment.center,
-                    ),
-                  ],
+          body: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              children: <Widget>[
+                // Display the image at the top
+                Center(
+                  child: Image.asset(
+                    selectedImage,
+                    height: 300, // Adjust the image size as needed
+                    width: 300,
+                  ),
                 ),
-              ),
+                const SizedBox(height: 20),
+                // Checkbox List with adjusted font size, color, and weight
+                CheckboxListTile(
+                  title: const Text(
+                    'University',
+                    style: TextStyle(
+                      fontSize: 24.0, // Increased font size
+                      color: Colors.black, // Changed font color to red
+                      fontWeight: FontWeight.bold, // Set font weight to bold
+                    ),
+                  ),
+                  value: isUniversityChecked,
+                  onChanged: (bool? value) {
+                    if (value != null && value) {
+                      updateChecked('University');
+                    }
+                  },
+                ),
+                CheckboxListTile(
+                  title: const Text(
+                    'Cat',
+                    style: TextStyle(
+                      fontSize: 24.0, // Increased font size
+                      color: Colors.black, // Changed font color to green
+                      fontWeight: FontWeight.w600, // Medium boldness
+                    ),
+                  ),
+                  value: isCatChecked,
+                  onChanged: (bool? value) {
+                    if (value != null && value) {
+                      updateChecked('Cat');
+                    }
+                  },
+                ),
+                CheckboxListTile(
+                  title: const Text(
+                    'Station',
+                    style: TextStyle(
+                      fontSize: 24.0, // Increased font size
+                      color: Colors.green, // Changed font color to blue
+                      fontWeight: FontWeight.w600, // Normal weight
+                    ),
+                  ),
+                  value: isStationChecked,
+                  onChanged: (bool? value) {
+                    if (value != null && value) {
+                      updateChecked('Station');
+                    }
+                  },
+                ),
+              ],
             ),
           ),
         ),
@@ -63,5 +131,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-
