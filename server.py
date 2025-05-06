@@ -1,13 +1,41 @@
-from flask import Flask, render_template, request, Response, jsonify
+from flask import Flask, render_template, request, Response, jsonify, send_file
 import os
+import csv
 import subprocess
 
 app = Flask(__name__)
 
 OUTPUT_FOLDER = 'static/output'
 SCREENSHOT_FOLDER = 'static/screenshots'
+CSV_PATH = os.path.join(app.root_path, 'static/output/similarity_results.csv')
 
-@app.route('/')
+@app.route('/student_scores')
+def student_scores():
+    rows = []
+    if os.path.exists(CSV_PATH):
+        with open(CSV_PATH, newline='') as csvfile:
+            reader = csv.reader(csvfile)
+            next(reader, None)  # Skip header
+            for row in reader:
+                while len(row) < 4:
+                    row.append('')  # Fill missing Remark if needed
+                rows.append(row)
+    return render_template('student_scores.html', rows=rows)
+
+@app.route('/save-student-scores', methods=['POST'])
+def save_student_scores():
+    data = request.json
+    with open(CSV_PATH, 'w', newline='') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(['Student Image', 'Similarity (%)', 'Score', 'Remark'])
+        writer.writerows(data)
+    return jsonify({'status': 'success'})
+
+@app.route('/download-scores')
+def download_scores():
+    return send_file(CSV_PATH, as_attachment=True, download_name='student_scores.csv')
+
+@app.route('/compare_list')
 def compare_list():
     # Get filenames from both folders
     output_files = set(os.listdir(OUTPUT_FOLDER))
@@ -23,8 +51,8 @@ def compare_list():
 def index():
     return render_template("index.html")
     
-@app.route('/dart-thumbnails')
-def dart_thumbnails():
+@app.route('/student_answers')
+def student_answers():
     root_folder = os.path.join(app.root_path, 'static', 'dart_files')
     projects = {}
 
@@ -44,7 +72,7 @@ def dart_thumbnails():
             if entries:
                 projects[folder] = entries
 
-    return render_template('dart_thumbnails.html', projects=projects)
+    return render_template('student_answers.html', projects=projects)
 
 @app.route('/run-dart', methods=['POST'])
 def run_dart():

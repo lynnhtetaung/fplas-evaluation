@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>FPLAS Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-light: #e0f7fa;
+      --bg-dark: #121212;
+      --card-light: white;
+      --card-dark: #1e1e1e;
+      --text-light: #1e1e1e;
+      --text-dark: #f1f1f1;
+      --shadow-light: rgba(0, 0, 0, 0.1);
+      --shadow-dark: rgba(0, 0, 0, 0.3);
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg-light);
+      color: var(--text-light);
+      transition: all 0.3s ease;
+    }
+
+    body.dark {
+      background: var(--bg-dark);
+      color: var(--text-dark);
+    }
+
+    .header {
+      text-align: center;
+      padding: 30px 20px 10px;
+    }
+
+    .header img {
+      max-height: 60px;
+      margin-bottom: 10px;
+    }
+
+    .header h1 {
+      margin: 10px 0 5px;
+      font-size: 2.2rem;
+    }
+
+    .subtitle {
+      font-size: 1rem;
+      color: #555;
+    }
+
+    .dashboard {
+      max-width: 1000px;
+      margin: 20px auto;
+      padding: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 30px;
+      justify-content: center;
+    }
+
+    .card {
+      width: 260px;
+      height: 200px;
+      background: var(--card-light);
+      border-radius: 16px;
+      box-shadow: 0 10px 24px var(--shadow-light);
+      text-align: center;
+      padding: 30px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-decoration: none;
+      color: var(--text-light);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease;
+    }
+
+    body.dark .card {
+      background: var(--card-dark);
+      box-shadow: 0 10px 24px var(--shadow-dark);
+      color: var(--text-dark);
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-icon {
+      font-size: 40px;
+      margin-bottom: 16px;
+    }
+
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .toggle-container {
+      position: fixed;
+      top: 16px;
+      right: 20px;
+    }
+
+    .toggle-btn {
+      background: #42a5f5;
+      color: white;
+      padding: 8px 16px;
+      font-size: 0.9rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .toggle-btn:hover {
+      background: #1e88e5;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 🌗 Dark Mode Toggle -->
+  <div class="toggle-container">
+    <button class="toggle-btn" onclick="toggleDarkMode()">🌗 Toggle Mode</button>
+  </div>
+
+  <!-- 🎓 University Banner and Title -->
+  <div class="header">
+    <h1>FPLAS Evaluation System</h1>
+    <!-- <img src="static/university_banner.jpg" alt="University Logo"> -->
+    <p class="subtitle">Select a module below to begin</p>
+  </div>
+
+  <!-- 📦 Dashboard Cards -->
+  <div class="dashboard">
+
+    <a class="card" href="/student_answers">
+      <div class="card-icon">📂</div>
+      <div class="card-title">Student Dart Answers</div>
+    </a>
+
+    <a class="card" href="/compare_list">
+      <div class="card-icon">🖼️</div>
+      <div class="card-title">Compare Answer & Output</div>
+    </a>
+
+    <a class="card" href="/student_scores">
+      <div class="card-icon">📊</div>
+      <div class="card-title">Student Score & Feedback</div>
+    </a>
+
+  </div>
+
+  <script>
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark');
+      localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+    }
+
+    // On load, apply saved theme
+    (function () {
+      const saved = localStorage.getItem('theme');
+      if (saved === 'dark') {
+        document.body.classList.add('dark');
+      }
+    })();
+  </script>
+
+</body>
+</html>

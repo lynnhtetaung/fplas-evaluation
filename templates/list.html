@@ -1,17 +1,35 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>Image Compare List</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
+    :root {
+      --light-bg: #f9f9f9;
+      --dark-bg: #121212;
+      --light-card: #fff;
+      --dark-card: #1e1e1e;
+      --light-text: #333;
+      --dark-text: #f1f1f1;
+      --accent-blue: #007BFF;
+    }
+
     body {
       font-family: 'Segoe UI', sans-serif;
       margin: 20px;
-      background-color: #f9f9f9;
+      background-color: var(--light-bg);
+      color: var(--light-text);
+      transition: background 0.3s, color 0.3s;
+    }
+
+    body.dark {
+      background-color: var(--dark-bg);
+      color: var(--dark-text);
     }
 
     h2 {
       text-align: center;
-      color: #333;
     }
 
     .search-bar {
@@ -25,14 +43,22 @@
       font-size: 16px;
       border: 1px solid #ccc;
       border-radius: 25px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
       outline: none;
       transition: 0.3s;
+      background: white;
+      color: #333;
     }
 
     .search-bar input:focus {
       border-color: #4A90E2;
       box-shadow: 0 0 8px rgba(74, 144, 226, 0.3);
+    }
+
+    body.dark .search-bar input {
+      background: #2c2c2c;
+      color: white;
+      border: 1px solid #555;
     }
 
     .gallery {
@@ -48,8 +74,14 @@
       padding: 16px;
       width: 520px;
       text-align: center;
-      background-color: #fff;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      background-color: var(--light-card);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    body.dark .thumb {
+      background-color: var(--dark-card);
+      color: var(--dark-text);
+      border: 1px solid #444;
     }
 
     .thumb-images {
@@ -69,7 +101,7 @@
       font-size: 18px;
       margin-top: 12px;
       font-weight: bold;
-      color: #007BFF;
+      color: var(--accent-blue);
       cursor: pointer;
       text-decoration: underline;
     }
@@ -84,7 +116,7 @@
       padding: 8px 16px;
       font-size: 16px;
       border: none;
-      background-color: #007BFF;
+      background-color: var(--accent-blue);
       color: white;
       border-radius: 5px;
       cursor: pointer;
@@ -92,6 +124,11 @@
 
     .pagination button:disabled {
       background-color: #ccc;
+    }
+
+    body.dark .pagination button {
+      background-color: #555;
+      color: white;
     }
 
     /* Modal */
@@ -103,17 +140,22 @@
       top: 0;
       width: 100%;
       height: 100%;
-      background-color: rgba(0,0,0,0.8);
+      background-color: rgba(0, 0, 0, 0.8);
     }
 
     .modal-content {
-      background-color: #fff;
+      background-color: white;
       margin: 60px auto;
       padding: 20px;
       border-radius: 10px;
       width: 90%;
       max-width: 1100px;
       text-align: center;
+    }
+
+    body.dark .modal-content {
+      background-color: #1e1e1e;
+      color: white;
     }
 
     .modal-images {
@@ -142,9 +184,41 @@
     .close:hover {
       color: #000;
     }
+
+    body.dark .close:hover {
+      color: white;
+    }
+
+    /* Toggle Button */
+    .toggle-container {
+      position: fixed;
+      top: 16px;
+      right: 20px;
+      z-index: 999;
+    }
+
+    .toggle-btn {
+      background: var(--accent-blue);
+      color: white;
+      border: none;
+      border-radius: 20px;
+      padding: 10px 16px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .toggle-btn:hover {
+      background: #005bb5;
+    }
   </style>
 </head>
 <body>
+
+  <!-- 🌗 Dark Mode Toggle -->
+  <div class="toggle-container">
+    <button class="toggle-btn" onclick="toggleDarkMode()">🌗 Toggle Mode</button>
+  </div>
 
   <h2>🖼️ Output UI Image Comparison</h2>
 
@@ -225,7 +299,6 @@
       showPage(1);
     }
 
-    // Show modal
     function openModal(filename) {
       document.getElementById('modalTitle').textContent = filename;
       document.getElementById('modalScreenshot').src = `/static/screenshots/${filename}`;
@@ -233,13 +306,23 @@
       document.getElementById('imageModal').style.display = 'block';
     }
 
-    // Close modal
     function closeModal() {
       document.getElementById('imageModal').style.display = 'none';
     }
 
-    // Initial display
-    filterThumbnails();
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark');
+      localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+    }
+
+    // On load, apply saved theme
+    (function () {
+      const saved = localStorage.getItem('theme');
+      if (saved === 'dark') {
+        document.body.classList.add('dark');
+      }
+      filterThumbnails();
+    })();
   </script>
 
 </body>
