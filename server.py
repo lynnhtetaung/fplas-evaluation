@@ -120,7 +120,7 @@ def run_dart_group():
         yield f"🔧 Executing script for {folder}...\n"
         command = [
             'python3', 'script.py',
-            '--dart_content', dart_path,
+            '--dart_folder', dart_path,
             '--screenshot_folder', screenshot_dir,
             '--exercise_number', folder
         ]
