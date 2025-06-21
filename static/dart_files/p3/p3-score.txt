@@ -1,0 +1,24 @@
+Button Assignment
+p3         Detect Score  Student Answer
+--------------------------------------------
+09B22401   pdf
+09B22407   0.70 Text
+09B22438   Error
+09B22439   0.78 Text
+09B22440   Not detect    although it is button
+09B22445   0.73 Text
+09B22470   0.72 Text
+09B22478   0.72 Text
+09B22490   0.63 Text
+09B22491   0.73 Text
+09B22495   0.73 Text
+09B22498   0.75 Text
+09B22500   0.74 Text
+09B22570   0.72 Text
+09B22573   0.65 Text
+09B22578   0.72 Text
+09B22583   Error
+09B22591   0.83 Inputbox  Japan Text
+09B22619   0.71 Dropdown  Japan Text 
+09B222461  0.72 Text
+Exercise3  0.73 Text 

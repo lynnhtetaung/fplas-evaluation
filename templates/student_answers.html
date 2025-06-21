@@ -56,7 +56,7 @@
       background: var(--blue-dark);
     }
 
-    .dropdown-select, .log-link {
+    .dropdown-select {
       margin: 20px auto;
       display: block;
       font-size: 16px;
@@ -66,7 +66,6 @@
       background: white;
       color: #1565c0;
       text-align: center;
-      text-decoration: none;
     }
 
     .group-header {
@@ -147,7 +146,6 @@
   </div>
 
   <h1>Student Dart Answers</h1>
-  <a href="/static/logs/output_log.txt" class="log-link" download>📄 Download Log</a>
 
   <select class="dropdown-select" id="groupSelector" onchange="showGroup(this.value)">
     <option value="">-- Select Group --</option>
@@ -186,29 +184,43 @@
       const statusDiv = document.getElementById(statusId);
 
       output.value = `▶ Running ${filename}...\n`;
+      button.disabled = true;
 
       fetch('/run-dart', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ folder, filename })
-      })
-        .then(res => res.text())
-        .then(text => {
-          output.value = text;
-          output.scrollTop = output.scrollHeight;
-          if (text.toLowerCase().includes("error")) {
-            statusDiv.innerHTML = "❌";
-            statusDiv.title = "Error";
-          } else {
-            statusDiv.innerHTML = "✅";
-            statusDiv.title = "Success";
-          }
-        })
-        .catch(error => {
-          statusDiv.innerHTML = "❌";
-          statusDiv.title = "Network Error";
-          output.value = `❌ Error: ${error}`;
-        });
+      }).then(response => {
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+
+        function read() {
+          reader.read().then(({ done, value }) => {
+            if (done) {
+              button.disabled = false;
+              return;
+            }
+            const text = decoder.decode(value);
+            output.value += text;
+            output.scrollTop = output.scrollHeight;
+            if (text.toLowerCase().includes("error")) {
+              statusDiv.innerHTML = "❌";
+              statusDiv.title = "Error";
+            } else {
+              statusDiv.innerHTML = "✅";
+              statusDiv.title = "Success";
+            }
+            read();
+          });
+        }
+
+        read();
+      }).catch(error => {
+        statusDiv.innerHTML = "❌";
+        statusDiv.title = "Network Error";
+        output.value = `❌ Error: ${error}`;
+        button.disabled = false;
+      });
     }
 
     function runGroup(button, folder) {
