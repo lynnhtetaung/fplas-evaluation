@@ -51,7 +51,7 @@ def main():
 
         for dart_file in dart_files:
             dart_file_path = os.path.join(dart_folder, dart_file)
-            screenshot_path = os.path.join(args.screenshot_folder, f"{os.path.splitext(dart_file)[0]}.png")
+            screenshot_path = os.path.join(args.screenshot_folder, args.exercise_number, f"{os.path.splitext(dart_file)[0]}.png")
 
             print(f"🔧 Executing script for {dart_file_path}...")
             run_flutter_and_screenshot(dart_file_path, screenshot_path, args.exercise_number)

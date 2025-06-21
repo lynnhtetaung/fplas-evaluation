@@ -22,8 +22,30 @@ def student_scores():
                 rows.append(row)
     return render_template('student_scores.html', rows=rows)
 
+@app.route('/yolo_student_scores')
+def yolo_student_scores():
+    rows = []
+    if os.path.exists(CSV_PATH):
+        with open(CSV_PATH, newline='') as csvfile:
+            reader = csv.reader(csvfile)
+            next(reader, None)  # Skip header
+            for row in reader:
+                while len(row) < 4:
+                    row.append('')  # Fill missing Remark if needed
+                rows.append(row)
+    return render_template('yolo_student_scores.html', rows=rows)
+
 @app.route('/save-student-scores', methods=['POST'])
 def save_student_scores():
+    data = request.json
+    with open(CSV_PATH, 'w', newline='') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(['Student Image', 'Similarity (%)', 'Score', 'Remark'])
+        writer.writerows(data)
+    return jsonify({'status': 'success'})
+
+@app.route('/save-yolo-scores', methods=['POST'])
+def save_yolo_scores():
     data = request.json
     with open(CSV_PATH, 'w', newline='') as csvfile:
         writer = csv.writer(csvfile)
@@ -34,6 +56,10 @@ def save_student_scores():
 @app.route('/download-scores')
 def download_scores():
     return send_file(CSV_PATH, as_attachment=True, download_name='student_scores.csv')
+
+@app.route('/download-yolo-scores')
+def download_yolo_scores():
+    return send_file(CSV_PATH, as_attachment=True, download_name='yolo_student_scores.csv')
 
 @app.route('/compare_list')
 def compare_list():
@@ -50,6 +76,14 @@ def compare_list():
 @app.route("/")
 def index():
     return render_template("index.html")
+
+@app.route("/yolo_evaluation")
+def yolo_evaluation():
+    return render_template("yolo_evaluation.html")
+
+@app.route("/image_evaluation")
+def image_evaluation():
+    return render_template("image_evaluation.html")
     
 @app.route('/student_answers')
 def student_answers():
@@ -73,6 +107,29 @@ def student_answers():
                 projects[folder] = entries
 
     return render_template('student_answers.html', projects=projects)
+
+@app.route('/yolo_student_answers')
+def yolo_student_answers():
+    root_folder = os.path.join(app.root_path, 'static', 'yolo_dart_files')
+    projects = {}
+
+    for folder in sorted(os.listdir(root_folder)):
+        folder_path = os.path.join(root_folder, folder)
+        if os.path.isdir(folder_path):
+            entries = []
+            for file in sorted(os.listdir(folder_path)):
+                if file.endswith('.dart'):
+                    with open(os.path.join(folder_path, file), 'r') as f:
+                        code_preview = f.read(300)  # Preview first 300 characters
+                    entries.append({
+                        'dart': file,
+                        'name': file.rsplit('.', 1)[0],
+                        'preview': code_preview
+                    })
+            if entries:
+                projects[folder] = entries
+
+    return render_template('yolo_student_answers.html', projects=projects)
 
 @app.route('/run-dart', methods=['POST'])
 def run_dart():
