@@ -8,6 +8,7 @@ app = Flask(__name__)
 OUTPUT_FOLDER = 'static/output'
 SCREENSHOT_FOLDER = 'static/screenshots'
 CSV_PATH = os.path.join(app.root_path, 'static/output/similarity_results.csv')
+YOLO_CSV_PATH = os.path.join(app.root_path, 'static/output/results.csv')
 
 @app.route('/student_scores')
 def student_scores():
@@ -25,8 +26,8 @@ def student_scores():
 @app.route('/yolo_student_scores')
 def yolo_student_scores():
     rows = []
-    if os.path.exists(CSV_PATH):
-        with open(CSV_PATH, newline='') as csvfile:
+    if os.path.exists(YOLO_CSV_PATH):
+        with open(YOLO_CSV_PATH, newline='') as csvfile:
             reader = csv.reader(csvfile)
             next(reader, None)  # Skip header
             for row in reader:

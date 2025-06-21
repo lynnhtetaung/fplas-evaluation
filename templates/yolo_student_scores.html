@@ -142,18 +142,18 @@
   </div>
 
   <div class="container">
-    <h2>📊 Student Evaluation Scores</h2>
+    <h2>📊 YOLO Evaluation Scores</h2>
 
     <div class="button-bar">
       <button class="download-btn" onclick="saveToCSV()">💾 Save Changes</button>
-      <a class="download-btn" href="/download-scores">⬇ Download Latest CSV</a>
+      <a class="download-btn" href="/yolo-download-scores">⬇ Download Latest CSV</a>
     </div>
 
     <table id="studentTable" class="display" style="width:100%">
       <thead>
         <tr>
           <th>Student Image</th>
-          <th>Similarity (%)</th>
+          <th>Problem Type (%)</th>
           <th>Score</th>
           <th>Remark</th>
         </tr>
@@ -213,7 +213,7 @@
 
     function saveToCSV() {
       const data = collectTableData();
-      fetch('/save-student-scores', {
+      fetch('/save-yolo-scores', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
