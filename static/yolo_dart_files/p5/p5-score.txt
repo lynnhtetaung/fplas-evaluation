@@ -1,0 +1,24 @@
+Dropdown Assignment
+p5        Detect Score  Student Answer
+----------------------------------------
+09B22401   pdf
+09B22407   0.29
+09B22438   Error
+09B22439   0.69
+09B22440   0.71
+09B22445   0.69 Text    Show Dropdown
+09B22470   0.70
+09B22478   0.73
+09B22490   Error
+09B22491   Error
+09B22495   0.67 Text    Show Dropdown
+09B22498   0.88
+09B22500   Error
+09B22570   Error
+09B22573   0.71 Text    Show Dropdown
+09B22578   0.26
+09B22583   0.52
+09B22591   Error
+09B22619   0.46, 0.76  Japan Text, Dropdown
+09B222461  0.50
+Exercise5  Dropdown 0.45 
