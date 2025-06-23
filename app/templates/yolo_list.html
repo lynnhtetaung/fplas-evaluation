@@ -99,6 +99,26 @@
       border-radius: 10px;
       box-shadow: 0 0 20px black;
     }
+
+    .pagination-bar {
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .pagination-bar button {
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 10px 15px;
+      margin: 0 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .pagination-bar button:hover {
+      background: #0056b3;
+    }
   </style>
 </head>
 <body>
@@ -107,14 +127,46 @@
   {% for folder, images in categories.items() %}
   <div class="category">
     <h2>{{ folder|upper }}</h2>
-    <div class="masonry">
-      {% for img in images %}
-      <div class="masonry-item" onclick="showPopup('{{ url_for('static', filename='screenshots/' + folder + '/' + img) }}')">
-        <img src="{{ url_for('static', filename='screenshots/' + folder + '/' + img) }}" alt="{{ img }}">
-        <div class="filename">{{ img }}</div>
-      </div>
-      {% endfor %}
-    </div>
+    <div class="masonry" id="masonry-{{ loop.index }}"></div>
+    <div class="pagination-bar" id="pagination-{{ loop.index }}"></div>
+    <script>
+      (function() {
+        const images = {{ images|tojson|safe }};
+        const folder = {{ folder|tojson|safe }};
+        const masonryId = 'masonry-{{ loop.index }}';
+        const paginationId = 'pagination-{{ loop.index }}';
+        const pageSize = 12;
+        let currentPage = 1;
+        function renderPage(page) {
+          const start = (page - 1) * pageSize;
+          const end = start + pageSize;
+          const pageImages = images.slice(start, end);
+          const masonry = document.getElementById(masonryId);
+          masonry.innerHTML = pageImages.map(img => `
+            <div class="masonry-item" onclick="showPopup('/static/screenshots/${folder}/${img}')">
+              <img src='/static/screenshots/${folder}/${img}' alt='${img}'>
+              <div class="filename">${img}</div>
+            </div>
+          `).join('');
+        }
+        function renderPagination() {
+          const pageCount = Math.ceil(images.length / pageSize);
+          const bar = document.getElementById(paginationId);
+          let html = '';
+          for (let i = 1; i <= pageCount; i++) {
+            html += `<button onclick='window["pageFn${masonryId}"](${i})' ${i === currentPage ? 'style="font-weight:bold;"' : ''}>${i}</button>`;
+          }
+          bar.innerHTML = html;
+        }
+        window["pageFn"+masonryId] = function(page) {
+          currentPage = page;
+          renderPage(page);
+          renderPagination();
+        };
+        renderPage(currentPage);
+        renderPagination();
+      })();
+    </script>
   </div>
   {% endfor %}
 

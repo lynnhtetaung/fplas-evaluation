@@ -1,47 +1,28 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const MyApp());
+	runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
+class MyApp extends StatelessWidget{
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context){
     return MaterialApp(
-      title: 'Checkbox Only',
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Checkbox Only Demo'),
+          title:Text('Little Glee Monster'),
         ),
-        body: const Center(
-          child: MyCheckbox(),
+        body: Center(
+          child: Text(
+            'アサヒ',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: Colors.yellow,
+            ),
+          ),
         ),
       ),
-    );
-  }
-}
-
-class MyCheckbox extends StatefulWidget {
-  const MyCheckbox({super.key});
-
-  @override
-  State<MyCheckbox> createState() => _MyCheckboxState();
-}
-
-class _MyCheckboxState extends State<MyCheckbox> {
-  bool isChecked = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return Checkbox(
-      value: isChecked,
-      onChanged: (bool? value) {
-        setState(() {
-          isChecked = value!;
-        });
-      },
     );
   }
 }

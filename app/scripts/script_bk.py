@@ -98,18 +98,3 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     dart_content_path = args.dart_content
-    screenshot_folder = args.screenshot_folder
-    exercise_number = args.exercise_number
-
-    os.makedirs(screenshot_folder, exist_ok=True)
-
-    dart_files = [f for f in os.listdir(dart_content_path) if f.endswith('.dart')]
-    if not dart_files:
-        print("No Dart files found in the specified folder.")
-        exit(1)
-
-    for dart_file in dart_files:
-        dart_file_path = os.path.join(dart_content_path, dart_file)
-        screenshot_path = os.path.join(screenshot_folder, f"{os.path.splitext(dart_file)[0]}.png")
-        print(f"Processing {dart_file}...")
-        run_flutter_and_screenshot(dart_file_path, screenshot_path, exercise_number)

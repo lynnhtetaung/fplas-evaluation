@@ -1,3 +1,5 @@
+# Moved from components/flutter_screenshot.py
+# ...existing code from old file...
 import os
 import subprocess
 import shutil

@@ -202,9 +202,10 @@
     }
 
     function collectTableData() {
+      const table = $('#studentTable').DataTable();
       const rows = [];
-      document.querySelectorAll("#studentTable tbody tr").forEach(tr => {
-        const cells = tr.querySelectorAll("td");
+      table.rows().every(function() {
+        const cells = $(this.node()).find('td');
         const row = Array.from(cells).map(getCleanText);
         rows.push(row);
       });

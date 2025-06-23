@@ -14,7 +14,6 @@ FIXED_FLUTTER_PORT = 8081
 
 error_image_path = os.path.join(template_project_dir, 'error_images', 'error_image.png')  # Path to your error image
 
-
 # Function to rebuild Flutter and take a screenshot
 def run_flutter_and_screenshot(dart_file_path, screenshot_path):
     try:
@@ -52,47 +51,36 @@ def run_flutter_and_screenshot(dart_file_path, screenshot_path):
             context = browser.new_context()
             page = context.new_page()
             page.goto(f"http://localhost:{FIXED_FLUTTER_PORT}")
-            
             # Ensure the page is fully loaded
             page.wait_for_selector('body', timeout=60000)  # Wait for body to be present
             page.wait_for_load_state("networkidle", timeout=60000)  # Ensure all network activity has stopped
-
             # Take the screenshot
             os.makedirs(os.path.dirname(screenshot_path), exist_ok=True)  # Ensure directory exists
             page.screenshot(path=screenshot_path)
             print(f"Screenshot saved to {screenshot_path}")
             browser.close()
-
         # Stop the web server after screenshot
         server_process.terminate()
-
     except Exception as e:
         print(f"Error: {e}")
-
 
 if __name__ == "__main__":
     # Command-line arguments
     parser = argparse.ArgumentParser(description="Run Flutter and take screenshots for multiple Dart files.")
     parser.add_argument("--dart_content", required=True, help="Folder containing Dart files.")
     parser.add_argument("--screenshot_folder", required=True, help="Folder to save the screenshots.")
-
     args = parser.parse_args()
-
     dart_content_path = args.dart_content
     screenshot_folder = args.screenshot_folder
-
     # Ensure the screenshot folder exists
     os.makedirs(screenshot_folder, exist_ok=True)
-
     # Process each Dart file in the folder
     dart_files = [f for f in os.listdir(dart_content_path) if f.endswith('.dart')]
     if not dart_files:
         print("No Dart files found in the specified folder.")
         exit(1)
-
     for dart_file in dart_files:
         dart_file_path = os.path.join(dart_content_path, dart_file)
         screenshot_path = os.path.join(screenshot_folder, f"{os.path.splitext(dart_file)[0]}_screenshot.png")
-
         print(f"Processing {dart_file}...")
         run_flutter_and_screenshot(dart_file_path, screenshot_path)
