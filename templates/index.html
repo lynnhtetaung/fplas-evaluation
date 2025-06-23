@@ -2,59 +2,60 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>FPLAS Dashboard</title>
+  <title>FPLAS Evaluation Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-light: #e0f7fa;
+      --bg-light: #f0f4f8;
       --bg-dark: #121212;
-      --card-light: white;
+      --card-light: #ffffff;
       --card-dark: #1e1e1e;
-      --text-light: #1e1e1e;
-      --text-dark: #f1f1f1;
+      --text-light: #1f2937;
+      --text-dark: #f5f5f5;
+      --blue: #42a5f5;
+      --blue-hover: #1e88e5;
       --shadow-light: rgba(0, 0, 0, 0.1);
-      --shadow-dark: rgba(0, 0, 0, 0.3);
+      --shadow-dark: rgba(0, 0, 0, 0.4);
+    }
+
+    * {
+      box-sizing: border-box;
     }
 
     body {
       margin: 0;
       padding: 0;
       font-family: 'Poppins', sans-serif;
-      background: var(--bg-light);
+      background-color: var(--bg-light);
       color: var(--text-light);
-      transition: all 0.3s ease;
+      transition: background-color 0.3s ease, color 0.3s ease;
     }
 
     body.dark {
-      background: var(--bg-dark);
+      background-color: var(--bg-dark);
       color: var(--text-dark);
     }
 
     .header {
       text-align: center;
-      padding: 30px 20px 10px;
-    }
-
-    .header img {
-      max-height: 60px;
-      margin-bottom: 10px;
+      padding: 40px 20px 20px;
     }
 
     .header h1 {
-      margin: 10px 0 5px;
-      font-size: 2.2rem;
+      font-size: 2.5rem;
+      margin-bottom: 10px;
     }
 
     .subtitle {
-      font-size: 1rem;
-      color: #555;
+      font-size: 1.1rem;
+      color: #607d8b;
     }
 
     .dashboard {
-      max-width: 1000px;
-      margin: 20px auto;
-      padding: 20px;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 30px 20px 60px;
       display: flex;
       flex-wrap: wrap;
       gap: 30px;
@@ -62,11 +63,11 @@
     }
 
     .card {
-      width: 260px;
-      height: 200px;
+      width: 280px;
+      height: 220px;
       background: var(--card-light);
       border-radius: 16px;
-      box-shadow: 0 10px 24px var(--shadow-light);
+      box-shadow: 0 10px 20px var(--shadow-light);
       text-align: center;
       padding: 30px 20px;
       display: flex;
@@ -75,7 +76,7 @@
       align-items: center;
       text-decoration: none;
       color: var(--text-light);
-      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
     body.dark .card {
@@ -86,16 +87,23 @@
 
     .card:hover {
       transform: translateY(-6px);
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 14px 28px rgba(0, 0, 0, 0.2);
     }
 
     .card-icon {
-      font-size: 40px;
-      margin-bottom: 16px;
+      font-size: 48px;
+      margin-bottom: 18px;
+      animation: float 2s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+      100% { transform: translateY(0); }
     }
 
     .card-title {
-      font-size: 1.1rem;
+      font-size: 1.2rem;
       font-weight: 600;
     }
 
@@ -103,51 +111,48 @@
       position: fixed;
       top: 16px;
       right: 20px;
+      z-index: 100;
     }
 
     .toggle-btn {
-      background: #42a5f5;
+      background-color: var(--blue);
       color: white;
-      padding: 8px 16px;
-      font-size: 0.9rem;
+      padding: 10px 16px;
+      font-size: 14px;
       border: none;
       border-radius: 8px;
       cursor: pointer;
-      transition: background 0.3s ease;
+      transition: background-color 0.3s ease;
     }
 
     .toggle-btn:hover {
-      background: #1e88e5;
+      background-color: var(--blue-hover);
     }
   </style>
 </head>
 <body>
 
-  <!-- 🌗 Dark Mode Toggle -->
+  <!-- 🌙 Theme Toggle -->
   <div class="toggle-container">
-    <button class="toggle-btn" onclick="toggleDarkMode()">🌗 Toggle Mode</button>
+    <button class="toggle-btn" onclick="toggleDarkMode()">🌗 Toggle Theme</button>
   </div>
 
-  <!-- 🎓 University Banner and Title -->
+  <!-- 📘 Header -->
   <div class="header">
     <h1>Flutter Class Evaluation System</h1>
-    <!-- <img src="static/university_banner.jpg" alt="University Logo"> -->
-    <p class="subtitle">Select an evaluation below to begin</p>
+    <p class="subtitle">Select an evaluation module to proceed</p>
   </div>
 
-  <!-- 📦 Dashboard Cards -->
+  <!-- 💠 Dashboard Navigation -->
   <div class="dashboard">
-
     <a class="card" href="/yolo_evaluation">
-      <div class="card-icon">📂</div>
-      <div class="card-title">YOLO Evaluation</div>
+      <div class="card-icon">🎯</div>
+      <div class="card-title">YOLOv8 Model</div>
     </a>
-
     <a class="card" href="/image_evaluation">
-      <div class="card-icon">📊</div>
-      <div class="card-title">Image Evaluation</div>
+      <div class="card-icon">🖼️</div>
+      <div class="card-title">Image Processing</div>
     </a>
-
   </div>
 
   <script>
@@ -156,10 +161,8 @@
       localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
     }
 
-    // On load, apply saved theme
     (function () {
-      const saved = localStorage.getItem('theme');
-      if (saved === 'dark') {
+      if (localStorage.getItem('theme') === 'dark') {
         document.body.classList.add('dark');
       }
     })();

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, Response, jsonify, send_file
+from flask import Flask, render_template, request, Response, jsonify, send_file, send_from_directory
 import os
 import csv
 import subprocess
@@ -48,7 +48,7 @@ def save_student_scores():
 @app.route('/save-yolo-scores', methods=['POST'])
 def save_yolo_scores():
     data = request.json
-    with open(CSV_PATH, 'w', newline='') as csvfile:
+    with open(YOLO_CSV_PATH, 'w', newline='') as csvfile:
         writer = csv.writer(csvfile)
         writer.writerow(['Student Image', 'Similarity (%)', 'Score', 'Remark'])
         writer.writerows(data)
@@ -60,7 +60,7 @@ def download_scores():
 
 @app.route('/download-yolo-scores')
 def download_yolo_scores():
-    return send_file(CSV_PATH, as_attachment=True, download_name='yolo_student_scores.csv')
+    return send_file(YOLO_CSV_PATH, as_attachment=True, download_name='yolo_student_scores.csv')
 
 @app.route('/compare_list')
 def compare_list():
@@ -72,6 +72,23 @@ def compare_list():
     common_files = sorted(list(output_files & screenshot_files))
 
     return render_template('list.html', projects=common_files)
+
+@app.route("/yolo_list")
+def yolo_list():
+    base_path = os.path.join(app.static_folder, "screenshots")
+    categories = {}
+
+    # Loop through subfolders like 'p1', 'p2'
+    for folder in sorted(os.listdir(base_path)):
+        folder_path = os.path.join(base_path, folder)
+        if os.path.isdir(folder_path):
+            images = sorted([
+                img for img in os.listdir(folder_path)
+                if img.endswith((".png", ".jpg", ".jpeg"))
+            ])
+            categories[folder] = images
+
+    return render_template("yolo_list.html", categories=categories)
 
 # Route for flutter component generation
 @app.route("/")
