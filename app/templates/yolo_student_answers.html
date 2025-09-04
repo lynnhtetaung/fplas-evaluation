@@ -186,7 +186,7 @@
       output.value = `▶ Running ${filename}...\n`;
       button.disabled = true;
 
-      fetch('/run-dart', {
+      fetch('/yolo-run-dart', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ folder, filename })
@@ -229,7 +229,7 @@
       button.disabled = true;
       button.textContent = '⏳ Running...';
 
-      fetch('/run-dart-group', {
+      fetch('/yolo-run-dart-group', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ folder })

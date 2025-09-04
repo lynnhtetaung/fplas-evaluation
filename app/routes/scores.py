@@ -67,7 +67,7 @@ def download_yolo_scores():
 def compare_list():
     app_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     output_files = set(os.listdir(os.path.join(app_dir, 'static', 'output')))
-    screenshot_files = set(os.listdir(os.path.join(app_dir, 'static', 'screenshots')))
+    screenshot_files = set(os.listdir(os.path.join(app_dir, 'static', 'dart_screenshots')))
     common_files = sorted(list(output_files & screenshot_files))
     return render_template('list.html', projects=common_files)
 
@@ -150,7 +150,7 @@ def run_dart():
     folder = data['folder']
     filename = data['filename']
     dart_files_dir = os.path.join(Config.STATIC_FOLDER, 'dart_files')
-    screenshot_dir = Config.SCREENSHOT_FOLDER
+    screenshot_dir = Config.DART_SCREENSHOT_FOLDER
     dart_path = os.path.join(dart_files_dir, folder, filename)
     if not os.path.exists(dart_path):
         return jsonify({"error": "Dart file not found"}), 404
@@ -175,7 +175,7 @@ def run_dart_group():
     data = request.get_json()
     folder = data['folder']
     dart_files_dir = os.path.join(Config.STATIC_FOLDER, 'dart_files')
-    screenshot_dir = Config.SCREENSHOT_FOLDER
+    screenshot_dir = Config.DART_SCREENSHOT_FOLDER
     dart_path = os.path.join(dart_files_dir, folder)
     if not os.path.exists(dart_path):
         return jsonify({"error": "Dart folder not found"}), 404
@@ -183,6 +183,57 @@ def run_dart_group():
         yield f"🔧 Executing script for {folder}...\n"
         command = [
             'python3', 'script.py',
+            '--dart_folder', dart_path,
+            '--screenshot_folder', screenshot_dir,
+            '--exercise_number', folder
+        ]
+        process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+        for line in iter(process.stdout.readline, ''):
+            yield line
+        process.stdout.close()
+        process.wait()
+        yield "\n✅ Group done.\n"
+    return Response(generate(), mimetype='text/plain')
+
+@bp.route('/yolo-run-dart', methods=['POST'])
+def yolo_run_dart():
+    data = request.get_json()
+    folder = data['folder']
+    filename = data['filename']
+    dart_files_dir = os.path.join(Config.STATIC_FOLDER, 'yolo_dart_files')
+    screenshot_dir = Config.SCREENSHOT_FOLDER
+    dart_path = os.path.join(dart_files_dir, folder, filename)
+    if not os.path.exists(dart_path):
+        return jsonify({"error": "Dart file not found"}), 404
+    def generate():
+        yield f"🔧 Executing script for {folder}/{filename}...\n"
+        command = [
+            'python3', 'script_yolo.py',
+            '--screenshot_folder', screenshot_dir,
+            '--exercise_number', folder,
+            '--dart_file', filename
+        ]
+        process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+        for line in iter(process.stdout.readline, ''):
+            yield line
+        process.stdout.close()
+        process.wait()
+        yield "\n✅ Done.\n"
+    return Response(generate(), mimetype='text/plain')
+
+@bp.route('/yolo-run-dart-group', methods=['POST'])
+def yolo_run_dart_group():
+    data = request.get_json()
+    folder = data['folder']
+    dart_files_dir = os.path.join(Config.STATIC_FOLDER, 'yolo_dart_files')
+    screenshot_dir = Config.SCREENSHOT_FOLDER
+    dart_path = os.path.join(dart_files_dir, folder)
+    if not os.path.exists(dart_path):
+        return jsonify({"error": "Dart folder not found"}), 404
+    def generate():
+        yield f"🔧 Executing script for {folder}...\n"
+        command = [
+            'python3', 'script_yolo.py',
             '--dart_folder', dart_path,
             '--screenshot_folder', screenshot_dir,
             '--exercise_number', folder

@@ -230,7 +230,7 @@
     {% for p in projects %}
     <div class="thumb" data-filename="{{ p }}">
       <div class="thumb-images">
-        <img src="{{ url_for('static', filename='screenshots/' ~ p) }}" alt="Screenshot of {{ p }}">
+        <img src="{{ url_for('static', filename='dart_screenshots/' ~ p) }}" alt="Screenshot of {{ p }}">
         <img src="{{ url_for('static', filename='output/' ~ p) }}" alt="Output of {{ p }}">
       </div>
       <div class="thumb-title" onclick="openModal('{{ p }}')">{{ p }}</div>
@@ -301,7 +301,7 @@
 
     function openModal(filename) {
       document.getElementById('modalTitle').textContent = filename;
-      document.getElementById('modalScreenshot').src = `/static/screenshots/${filename}`;
+      document.getElementById('modalScreenshot').src = `/static/dart_screenshots/${filename}`;
       document.getElementById('modalOutput').src = `/static/output/${filename}`;
       document.getElementById('imageModal').style.display = 'block';
     }

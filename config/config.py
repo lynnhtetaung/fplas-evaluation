@@ -7,6 +7,7 @@ class Config:
     STATIC_FOLDER = 'app/static'
     OUTPUT_FOLDER = os.path.join(STATIC_FOLDER, 'output')
     SCREENSHOT_FOLDER = os.path.join(STATIC_FOLDER, 'screenshots')
+    DART_SCREENSHOT_FOLDER = os.path.join(STATIC_FOLDER, 'dart_screenshots')
     CORRECT_IMAGES_DIR = os.path.join(STATIC_FOLDER, 'correct_images')
     ERROR_IMAGE_PATH = os.path.join(STATIC_FOLDER, 'error_image.png')
     FLUTTER_EXECUTABLE = '/home/lynnhtetaung/flutter/bin/flutter'
