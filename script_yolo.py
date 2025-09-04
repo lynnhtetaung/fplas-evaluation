@@ -27,7 +27,7 @@ def main():
     os.makedirs(args.screenshot_folder, exist_ok=True)
 
     # Use config for dart_files_dir
-    dart_files_dir = os.path.join(Config.STATIC_FOLDER, 'dart_files')
+    dart_files_dir = os.path.join(Config.STATIC_FOLDER, 'yolo_dart_files')
 
     if args.dart_file:
         dart_file_path = os.path.join(dart_files_dir, args.exercise_number, args.dart_file)

@@ -1,8 +1,9 @@
 import os
 import shutil
 
-# Dir path
+# Moodle Directory
 base_dir = "/home/lynnhtetaung/Desktop/StudentAnswerFiles_June12/情報化社会と技術 (2025098682)-Exercise4-1760790"
+# YOLO or Image Processing Student Files
 destination_dir = "/home/lynnhtetaung/Documents/develop/plas/fplas-evaluation/static/dart_files"
 
 # Change destination path for your folder
